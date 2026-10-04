@@ -1,0 +1,1058 @@
+"use client";
+
+import { useState } from "react";
+import {
+  calculateSalary,
+  SalaryResult,
+} from "@/lib/salary/calculator";
+import {
+  SalaryStructureMode,
+  TaxRegime,
+  PFMode,
+} from "@/lib/salary/types";
+
+const DEFAULTS = {
+  ctc: 1000000,
+  basicPercent: 40,
+  hra: 0,
+  otherAllowances: 0,
+  variablePay: 0,
+  taxRegime: "new" as TaxRegime,
+  mode: "simple" as SalaryStructureMode,
+};
+
+export default function CTCCalculator() {
+  const [ctc, setCtc] = useState(DEFAULTS.ctc);
+
+  const [basicPercent, setBasicPercent] = useState(
+    DEFAULTS.basicPercent
+  );
+
+  const [hra, setHra] = useState(DEFAULTS.hra);
+
+  const [otherAllowances, setOtherAllowances] =
+    useState(DEFAULTS.otherAllowances);
+
+  const [variablePay, setVariablePay] =
+    useState(DEFAULTS.variablePay);
+
+  const [employerPF, setEmployerPF] = useState(0);
+  const [pfMode, setpfMode] = 
+    useState<PFMode>("standard");
+
+  const [gratuity, setGratuity] = useState(0);
+
+  const [taxRegime, setTaxRegime] =
+    useState<TaxRegime>(DEFAULTS.taxRegime);
+
+  const [mode, setMode] =
+    useState<SalaryStructureMode>(DEFAULTS.mode);
+
+
+  // ==========================================
+  // BASIC SALARY
+  // ==========================================
+
+  const basicSalary = Math.round(
+    (ctc * basicPercent) / 100
+  );
+
+
+  // ==========================================
+  // CALCULATE SALARY
+  // ==========================================
+
+  const result: SalaryResult =
+    calculateSalary({
+      ctc,
+      basicPercent,
+      hra,
+      specialAllowance: 0,
+      otherAllowances,
+      variablePay,
+      taxRegime,
+      mode,
+
+      PFMode,
+
+      employerPF:
+        mode === "detailed"
+          ? employerPF
+          : undefined,
+
+      gratuity:
+        mode === "detailed"
+          ? gratuity
+          : undefined,
+    });
+
+
+  // ==========================================
+  // DETAILED CTC TOTAL
+  // ==========================================
+
+  const detailedCtcTotal =
+    result.basicSalary +
+    result.hra +
+    result.specialAllowance +
+    result.otherAllowances +
+    result.variablePay +
+    result.employerPF +
+    result.gratuity;
+
+  const detailedRemainingCtc =
+    ctc - detailedCtcTotal;
+
+
+  // ==========================================
+  // AVERAGE MONTHLY TAKE-HOME
+  // Includes variable pay
+  // ==========================================
+
+  const averageMonthlyTakeHome =
+    Math.round(
+      result.annualTakeHome / 12
+    );
+
+
+  // ==========================================
+  // RESET
+  // ==========================================
+
+  function handleReset() {
+    setCtc(DEFAULTS.ctc);
+
+    setBasicPercent(
+      DEFAULTS.basicPercent
+    );
+
+    setHra(DEFAULTS.hra);
+
+    setOtherAllowances(
+      DEFAULTS.otherAllowances
+    );
+
+    setVariablePay(
+      DEFAULTS.variablePay
+    );
+
+    setEmployerPF(0);
+
+    setGratuity(0);
+
+    setTaxRegime(
+      DEFAULTS.taxRegime
+    );
+
+    setMode(
+      DEFAULTS.mode
+    );
+  }
+
+
+  return (
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+
+      {/* ======================================
+          HEADER
+      ======================================= */}
+
+      <header className="border-b bg-white">
+
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+
+          <a
+            href="/"
+            className="text-2xl font-bold text-blue-600"
+          >
+            SalaryMate
+          </a>
+
+          <a
+            href="/"
+            className="text-sm font-medium hover:text-blue-600"
+          >
+            Home
+          </a>
+
+        </div>
+
+      </header>
+
+
+      {/* ======================================
+          MAIN
+      ======================================= */}
+
+      <section className="px-6 py-10">
+
+        <div className="mx-auto max-w-6xl">
+
+          {/* ==================================
+              TITLE
+          =================================== */}
+
+          <div className="max-w-3xl">
+
+            <p className="font-semibold text-blue-600">
+              SALARY CALCULATOR
+            </p>
+
+            <h1 className="mt-2 text-4xl font-bold">
+              CTC to In-Hand Salary Calculator
+            </h1>
+
+            <p className="mt-3 text-slate-600">
+              Calculate your estimated monthly
+              take-home salary from your annual CTC.
+            </p>
+
+          </div>
+
+
+          {/* ==================================
+              CALCULATOR GRID
+          =================================== */}
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-2">
+
+
+            {/* =================================
+                INPUT CARD
+            ================================== */}
+
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+
+              {/* HEADER */}
+
+              <div className="flex items-start justify-between">
+
+                <div>
+
+                  <h2 className="text-xl font-bold">
+                    Salary Structure
+                  </h2>
+
+                  <p className="mt-1 text-sm text-slate-500">
+                    Enter your annual salary details.
+                  </p>
+
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="rounded-lg border px-3 py-2 text-sm font-medium hover:bg-slate-50"
+                >
+                  Reset
+                </button>
+
+              </div>
+
+
+              {/* =================================
+                  MODE
+              ================================== */}
+
+              <div className="mt-6">
+
+                <label className="text-sm font-medium">
+                  Salary Structure Mode
+                </label>
+
+                <div className="mt-3 grid grid-cols-2 gap-3">
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setMode("simple")
+                    }
+                    className={`rounded-lg border px-4 py-3 text-sm font-semibold transition ${
+                      mode === "simple"
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "bg-white hover:bg-slate-50"
+                    }`}
+                  >
+                    Simple CTC
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setMode("detailed")
+                    }
+                    className={`rounded-lg border px-4 py-3 text-sm font-semibold transition ${
+                      mode === "detailed"
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "bg-white hover:bg-slate-50"
+                    }`}
+                  >
+                    Detailed CTC
+                  </button>
+
+                </div>
+
+                <p className="mt-2 text-xs text-slate-500">
+
+                  {mode === "simple"
+                    ? "The calculator estimates the remaining salary components automatically."
+                    : "Enter the actual salary components. Special Allowance is automatically balanced."}
+
+                </p>
+
+              </div>
+
+
+              {/* =================================
+                  CTC
+              ================================== */}
+
+              <SalaryInput
+                label="Annual CTC"
+                value={ctc}
+                onChange={setCtc}
+              />
+
+
+              {/* =================================
+                  BASIC %
+              ================================== */}
+
+              <div className="mt-5">
+
+                <label className="text-sm font-medium">
+                  Basic Salary (% of CTC)
+                </label>
+
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={basicPercent}
+                  onChange={(e) =>
+                    setBasicPercent(
+                      Math.min(
+                        100,
+                        Math.max(
+                          0,
+                          Number(e.target.value)
+                        )
+                      )
+                    )
+                  }
+                  className="mt-2 w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Basic Salary: ₹
+                  {formatCurrency(
+                    basicSalary
+                  )}
+                </p>
+
+              </div>
+
+              {/* =================================
+    PF MODE
+================================== */}
+
+<div className="mt-5">
+
+  <label className="text-sm font-medium">
+    PF Calculation
+  </label>
+
+  <select
+    value={pfMode}
+    onChange={(e) =>
+      setPfMode(
+        e.target.value as PFMode
+      )
+    }
+    className="mt-2 w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+  >
+
+    <option value="standard">
+      Standard PF
+    </option>
+
+    <option value="actual">
+      Actual PF
+    </option>
+
+    <option value="custom">
+      Custom PF
+    </option>
+
+  </select>
+
+  <p className="mt-1 text-xs text-slate-500">
+
+    {pfMode === "standard" &&
+      "Uses the standard PF calculation with the ₹15,000 monthly wage ceiling."}
+
+    {pfMode === "actual" &&
+      "Uses the actual PF amounts provided in your salary structure."}
+
+    {pfMode === "custom" &&
+      "Use your own employee and employer PF amounts."}
+
+  </p>
+
+</div>
+
+
+              {/* =================================
+                  HRA
+              ================================== */}
+
+              <SalaryInput
+                label="Annual HRA"
+                value={hra}
+                onChange={setHra}
+              />
+
+
+              {/* =================================
+                  OTHER ALLOWANCES
+              ================================== */}
+
+              <SalaryInput
+                label="Other Annual Allowances"
+                value={otherAllowances}
+                onChange={setOtherAllowances}
+              />
+
+
+              {/* =================================
+                  VARIABLE PAY
+              ================================== */}
+
+              <SalaryInput
+                label="Annual Variable Pay"
+                value={variablePay}
+                onChange={setVariablePay}
+                helperText="Bonus or performance-linked component."
+              />
+
+
+              {/* =================================
+                  DETAILED MODE
+              ================================== */}
+
+              {mode === "detailed" && (
+                <>
+
+                  {/* EMPLOYER PF */}
+
+                  <SalaryInput
+                    label="Annual Employer PF"
+                    value={employerPF}
+                    onChange={setEmployerPF}
+                    helperText="Employer PF contribution included in CTC."
+                  />
+
+
+                  {/* GRATUITY */}
+
+                  <SalaryInput
+                    label="Annual Gratuity"
+                    value={gratuity}
+                    onChange={setGratuity}
+                    helperText="Gratuity provision included in CTC."
+                  />
+
+
+                  {/* =================================
+                      AUTO SPECIAL ALLOWANCE
+                  ================================== */}
+
+                  <div className="mt-5">
+
+                    <label className="text-sm font-medium">
+                      Special Allowance
+                    </label>
+
+                    <div className="mt-2 flex items-center justify-between rounded-lg border bg-slate-50 px-4 py-3">
+
+                      <span className="text-sm text-slate-500">
+                        Automatically calculated
+                      </span>
+
+                      <span className="font-semibold">
+                        ₹
+                        {formatCurrency(
+                          result.specialAllowance
+                        )}
+                      </span>
+
+                    </div>
+
+                    <p className="mt-1 text-xs text-slate-500">
+                      This amount automatically balances
+                      your CTC after the other components.
+                    </p>
+
+                  </div>
+
+
+                  {/* =================================
+                      CTC RECONCILIATION
+                  ================================== */}
+
+                  <div className="mt-5 rounded-xl bg-slate-50 p-4">
+
+                    <div className="flex justify-between text-sm">
+
+                      <span>
+                        CTC Components
+                      </span>
+
+                      <strong>
+                        ₹
+                        {formatCurrency(
+                          detailedCtcTotal
+                        )}
+                      </strong>
+
+                    </div>
+
+                    <div className="mt-2 flex justify-between text-sm">
+
+                      <span>
+                        Remaining CTC
+                      </span>
+
+                      <strong
+                        className={
+                          Math.abs(
+                            detailedRemainingCtc
+                          ) < 1
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }
+                      >
+                        ₹
+                        {formatCurrency(
+                          detailedRemainingCtc
+                        )}
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+                </>
+              )}
+
+
+              {/* =================================
+                  SIMPLE MODE SUMMARY
+              ================================== */}
+
+              {mode === "simple" && (
+
+                <div className="mt-5 rounded-xl bg-slate-50 p-4">
+
+                  <div className="flex justify-between text-sm">
+
+                    <span>
+                      Basic Salary
+                    </span>
+
+                    <strong>
+                      ₹
+                      {formatCurrency(
+                        result.basicSalary
+                      )}
+                    </strong>
+
+                  </div>
+
+                  <div className="mt-2 flex justify-between text-sm">
+
+                    <span>
+                      Estimated Fixed Gross
+                    </span>
+
+                    <strong>
+                      ₹
+                      {formatCurrency(
+                        result.fixedGrossSalary
+                      )}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              )}
+
+
+              {/* =================================
+                  TAX REGIME
+              ================================== */}
+
+              <div className="mt-6">
+
+                <label className="text-sm font-medium">
+                  Income Tax Regime
+                </label>
+
+                <div className="mt-3 grid grid-cols-2 gap-3">
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setTaxRegime("new")
+                    }
+                    className={`rounded-lg border px-4 py-3 text-sm font-semibold transition ${
+                      taxRegime === "new"
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "bg-white hover:bg-slate-50"
+                    }`}
+                  >
+                    New Regime
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setTaxRegime("old")
+                    }
+                    className={`rounded-lg border px-4 py-3 text-sm font-semibold transition ${
+                      taxRegime === "old"
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "bg-white hover:bg-slate-50"
+                    }`}
+                  >
+                    Old Regime
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            {/* =================================
+                RESULT CARD
+            ================================== */}
+
+            <div className="rounded-2xl bg-blue-600 p-6 text-white shadow-sm">
+
+              {/* MAIN TAKE-HOME */}
+
+              <p className="text-sm opacity-80">
+                Regular Monthly Take-Home
+              </p>
+
+              <h2 className="mt-2 text-4xl font-bold">
+                ₹
+                {formatCurrency(
+                  result.monthlyFixedTakeHome
+                )}
+              </h2>
+
+              <p className="mt-2 text-sm opacity-80">
+                Your estimated regular monthly
+                salary after employee PF and
+                allocated tax.
+              </p>
+
+
+              {/* =================================
+                  TAKE HOME SUMMARY
+              ================================== */}
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+
+                <ResultBox
+                  label="Average Monthly Take-Home"
+                  value={
+                    averageMonthlyTakeHome
+                  }
+                />
+
+                <ResultBox
+                  label="Annual Take-Home"
+                  value={
+                    result.annualTakeHome
+                  }
+                />
+
+              </div>
+
+
+              {/* =================================
+                  VARIABLE PAY
+              ================================== */}
+
+              <div className="mt-3 rounded-xl bg-white/10 p-4">
+
+                <div className="flex justify-between text-sm">
+
+                  <span className="opacity-80">
+                    Annual Variable Pay
+                  </span>
+
+                  <strong>
+                    ₹
+                    {formatCurrency(
+                      result.variablePay
+                    )}
+                  </strong>
+
+                </div>
+
+              </div>
+
+
+              {/* =================================
+                  SALARY BREAKDOWN
+              ================================== */}
+
+              <div className="mt-8">
+
+                <h3 className="mb-2 text-lg font-semibold">
+                  Salary Breakdown
+                </h3>
+
+                <Breakdown
+                  label="Annual CTC"
+                  value={result.ctc}
+                />
+
+                <Breakdown
+                  label="Basic Salary"
+                  value={result.basicSalary}
+                />
+
+                <Breakdown
+                  label="HRA"
+                  value={result.hra}
+                />
+
+                <Breakdown
+                  label="Special Allowance"
+                  value={
+                    result.specialAllowance
+                  }
+                />
+
+                <Breakdown
+                  label="Other Allowances"
+                  value={
+                    result.otherAllowances
+                  }
+                />
+
+                <Breakdown
+                  label="Fixed Gross Salary"
+                  value={
+                    result.fixedGrossSalary
+                  }
+                />
+
+                <Breakdown
+                  label="Variable Pay"
+                  value={
+                    result.variablePay
+                  }
+                />
+
+                <Breakdown
+                  label="Gross Salary"
+                  value={
+                    result.grossSalary
+                  }
+                />
+
+                <Breakdown
+                  label="Employee PF"
+                  value={
+                    result.employeePF
+                  }
+                />
+
+                <Breakdown
+                  label="Employer PF"
+                  value={
+                    result.employerPF
+                  }
+                />
+
+                <Breakdown
+                  label="Gratuity"
+                  value={
+                    result.gratuity
+                  }
+
+                />
+
+                <Breakdown
+                  label="Standard Deduction"
+                  value={
+                    result.standardDeduction
+                  }
+                />
+
+                <Breakdown
+                  label="Taxable Income"
+                  value={
+                    result.taxableIncome
+                  }
+                />
+
+                <Breakdown
+                  label="Income Tax"
+                  value={
+                    result.incomeTax
+                  }
+                />
+
+                <Breakdown
+                  label="Health & Education Cess"
+                  value={
+                    result.cess
+                  }
+                />
+
+                <Breakdown
+                  label="Total Tax"
+                  value={
+                    result.totalTax
+                  }
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          {/* ==================================
+              SUMMARY
+          =================================== */}
+
+          <div className="mt-8 rounded-2xl border bg-white p-6 shadow-sm">
+
+            <h2 className="text-xl font-bold">
+              Your Salary Summary
+            </h2>
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+              <SummaryCard
+                label="Regular Monthly Take-Home"
+                value={
+                  result.monthlyFixedTakeHome
+                }
+              />
+
+              <SummaryCard
+                label="Average Monthly Take-Home"
+                value={
+                  averageMonthlyTakeHome
+                }
+              />
+
+              <SummaryCard
+                label="Annual Take-Home"
+                value={
+                  result.annualTakeHome
+                }
+              />
+
+              <SummaryCard
+                label="Total Tax"
+                value={
+                  result.totalTax
+                }
+              />
+
+            </div>
+
+          </div>
+
+
+          {/* ==================================
+              DISCLAIMER
+          =================================== */}
+
+          <div className="mt-8 rounded-xl border bg-white p-5 text-sm text-slate-600">
+
+            <strong>Important:</strong>{" "}
+
+            SalaryMate provides an estimated salary
+            calculation. Actual take-home salary can
+            vary depending on your employer&apos;s
+            salary structure, PF configuration,
+            tax deductions, bonuses, benefits and
+            other components.
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+  );
+}
+
+
+/* ==========================================
+   SALARY INPUT
+========================================== */
+
+function SalaryInput({
+  label,
+  value,
+  onChange,
+  helperText,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  helperText?: string;
+}) {
+
+  return (
+    <div className="mt-5">
+
+      <label className="text-sm font-medium">
+        {label}
+      </label>
+
+      <input
+        type="number"
+        min="0"
+        value={value}
+        onChange={(e) =>
+          onChange(
+            Math.max(
+              0,
+              Number(
+                e.target.value
+              )
+            )
+          )
+        }
+        className="mt-2 w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+      />
+
+      {helperText && (
+        <p className="mt-1 text-xs text-slate-500">
+          {helperText}
+        </p>
+      )}
+
+    </div>
+  );
+}
+
+
+/* ==========================================
+   BREAKDOWN
+========================================== */
+
+function Breakdown({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+
+  return (
+    <div className="flex items-center justify-between border-b border-white/20 py-3">
+
+      <span className="text-sm opacity-90">
+        {label}
+      </span>
+
+      <span className="font-semibold">
+        ₹
+        {formatCurrency(value)}
+      </span>
+
+    </div>
+  );
+}
+
+
+/* ==========================================
+   RESULT BOX
+========================================== */
+
+function ResultBox({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+
+  return (
+    <div className="rounded-xl bg-white/10 p-4">
+
+      <p className="text-xs opacity-75">
+        {label}
+      </p>
+
+      <p className="mt-1 text-lg font-bold">
+        ₹
+        {formatCurrency(value)}
+      </p>
+
+    </div>
+  );
+}
+
+
+/* ==========================================
+   SUMMARY CARD
+========================================== */
+
+function SummaryCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+
+  return (
+    <div className="rounded-xl bg-slate-50 p-4">
+
+      <p className="text-sm text-slate-500">
+        {label}
+      </p>
+
+      <p className="mt-2 text-xl font-bold">
+        ₹
+        {formatCurrency(value)}
+      </p>
+
+    </div>
+  );
+}
+
+
+/* ==========================================
+   CURRENCY FORMATTER
+========================================== */
+
+function formatCurrency(
+  value: number
+) {
+
+  return Math.round(
+    value
+  ).toLocaleString(
+    "en-IN"
+  );
+}

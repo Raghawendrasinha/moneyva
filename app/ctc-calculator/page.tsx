@@ -1527,19 +1527,12 @@ function MoneyInput({
   helper,
 }: {
   label: string;
-
   value: number;
-
   onChange: (value: number) => void;
-
   helper?: string;
 }) {
   return (
-    <div
-      className="
-        mt-5
-      "
-    >
+    <div className="mt-5">
       <label
         className="
           text-sm
@@ -1549,51 +1542,84 @@ function MoneyInput({
         {label}
       </label>
 
-      <input
-        type="number"
-        min="0"
+      <div className="relative mt-2">
+        <span
+          className="
+            pointer-events-none
+            absolute
+            left-4
+            top-1/2
+            -translate-y-1/2
+            text-slate-500
+            dark:text-slate-400
+          "
+        >
+          ₹
+        </span>
 
-        value={value === 0 ? "" : value}
+        <input
+          type="number"
+          min="0"
+          step="1"
+          inputMode="numeric"
+          value={value === 0 ? "" : value}
+          placeholder="0"
+          onChange={(e) => {
+            const raw = e.target.value;
 
-        placeholder="0"
+            if (raw === "") {
+              onChange(0);
+              return;
+            }
 
-        onChange={(e) => {
-          const raw = e.target.value;
+            const parsed = Number(raw);
 
-          if (raw === "") {
-            onChange(0);
+            if (!Number.isFinite(parsed)) {
+              onChange(0);
+              return;
+            }
 
-            return;
-          }
+            onChange(Math.max(0, parsed));
+          }}
+          className="
+            w-full
+            rounded-lg
+            border
+            border-slate-300
+            bg-white
+            py-3
+            pl-10
+            pr-4
+            text-slate-900
+            outline-none
+            transition
 
-          onChange(Math.max(0, Number(raw)));
-        }}
+            placeholder:text-slate-400
 
-        className="
-          mt-2
-          w-full
-          rounded-lg
-          border
-          border-slate-300
-          bg-white
-          px-4
-          py-3
-          text-slate-900
-          outline-none
-          transition
+            focus:border-emerald-500
+            focus:ring-1
+            focus:ring-emerald-500
 
-          placeholder:text-slate-400
+            dark:border-white/10
+            dark:bg-[#07111F]
+            dark:text-white
+            dark:placeholder:text-slate-600
+          "
+        />
+      </div>
 
-          focus:border-emerald-500
-          focus:ring-1
-          focus:ring-emerald-500
-
-          dark:border-white/10
-          dark:bg-[#07111F]
-          dark:text-white
-          dark:placeholder:text-slate-600
-        "
-      />
+      {value > 0 && (
+        <p
+          className="
+            mt-1
+            text-xs
+            text-slate-500
+            dark:text-slate-400
+          "
+        >
+          ₹{value.toLocaleString("en-IN")}
+        </p>
+      )}
 
       {helper && (
         <p

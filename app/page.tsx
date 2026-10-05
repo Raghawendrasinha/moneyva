@@ -683,6 +683,16 @@ export default function Home() {
           />
 
           <ToolCard
+            icon="%"
+            title={t.salaryHikeCalculator}
+            description={t.salaryHikeDescription}
+            href="/salary-hike-calculator"
+            available
+            availableText={t.available}
+            tryText={t.tryIt}
+          />
+
+          <ToolCard
             icon="T"
             title={t.incomeTax}
             description={t.incomeTaxDescription}

@@ -34,6 +34,9 @@ export const translations = {
       freeToUse: "Free to use",
 
       ctcToInHand: "CTC to In-Hand",
+      salaryHikeCalculator: "Salary Hike Calculator",
+      salaryHikeDescription:
+        "Calculate your salary hike percentage and see the annual and monthly change.",
       salaryCalculator: "Salary Calculator",
       exampleAnnualCtc: "Example annual CTC",
       monthlyTakeHome: "Monthly Take-Home",
@@ -114,6 +117,25 @@ export const translations = {
 
       rights: "All rights reserved.",
     },
+
+      salaryHike: {
+        calculatorLabel: "SALARY CALCULATOR",
+        title: "Salary Hike Calculator",
+        description:
+          "Calculate your salary increase, hike percentage and monthly salary change instantly.",
+        enterSalaryDetails: "Enter Salary Details",
+        currentAnnualCtc: "Current Annual CTC",
+        newAnnualCtc: "New Annual CTC",
+        salaryHint:
+          "Enter your old and new CTC to see the percentage hike and monthly salary difference.",
+        resultTitle: "Your Salary Hike",
+        hikePercentage: "Hike Percentage",
+        annualIncrease: "Annual Increase",
+        currentMonthlyCtc: "Current Monthly CTC",
+        newMonthlyCtc: "New Monthly CTC",
+        monthlyIncrease: "Monthly Increase",
+        calculateInHand: "Calculate your in-hand salary",
+      },
 
     calculator: {
       salaryCalculator: "SALARY CALCULATOR",
@@ -260,6 +282,9 @@ export const translations = {
       freeToUse: "मुफ्त उपयोग",
 
       ctcToInHand: "CTC से इन-हैंड",
+      salaryHikeCalculator: "सैलरी हाइक कैलकुलेटर",
+      salaryHikeDescription:
+        "अपनी सैलरी बढ़ोतरी प्रतिशत और वार्षिक व मासिक बदलाव की गणना करें।",
       salaryCalculator: "सैलरी कैलकुलेटर",
       exampleAnnualCtc: "उदाहरण वार्षिक CTC",
       monthlyTakeHome: "मासिक टेक-होम",
@@ -340,6 +365,25 @@ export const translations = {
 
       rights: "सर्वाधिकार सुरक्षित।",
     },
+
+      salaryHike: {
+        calculatorLabel: "सैलरी कैलकुलेटर",
+        title: "सैलरी हाइक कैलकुलेटर",
+        description:
+          "अपनी सैलरी बढ़ोतरी, हाइक प्रतिशत और मासिक सैलरी में बदलाव की तुरंत गणना करें।",
+        enterSalaryDetails: "सैलरी की जानकारी दर्ज करें",
+        currentAnnualCtc: "वर्तमान वार्षिक CTC",
+        newAnnualCtc: "नई वार्षिक CTC",
+        salaryHint:
+          "पुरानी और नई CTC दर्ज करें और हाइक प्रतिशत व मासिक सैलरी में बदलाव देखें।",
+        resultTitle: "आपकी सैलरी हाइक",
+        hikePercentage: "हाइक प्रतिशत",
+        annualIncrease: "वार्षिक बढ़ोतरी",
+        currentMonthlyCtc: "वर्तमान मासिक CTC",
+        newMonthlyCtc: "नई मासिक CTC",
+        monthlyIncrease: "मासिक बढ़ोतरी",
+        calculateInHand: "अपनी इन-हैंड सैलरी कैलकुलेट करें",
+      },
 
     calculator: {
       salaryCalculator: "सैलरी कैलकुलेटर",

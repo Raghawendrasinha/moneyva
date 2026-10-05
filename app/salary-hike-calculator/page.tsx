@@ -197,22 +197,22 @@ export default function SalaryHikeCalculator() {
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <ResultItem
-                label="{t.annualIncrease}"
+                label={t.annualIncrease}
                 value={formatCurrency(result.increase)}
               />
 
               <ResultItem
-                label="{t.currentMonthlyCtc}"
+                label={t.currentMonthlyCtc}
                 value={formatCurrency(result.currentMonthly)}
               />
 
               <ResultItem
-                label="{t.newMonthlyCtc}"
+                label={t.newMonthlyCtc}
                 value={formatCurrency(result.newMonthly)}
               />
 
               <ResultItem
-                label="{t.monthlyIncrease}"
+                label={t.monthlyIncrease}
                 value={formatCurrency(result.monthlyIncrease)}
               />
             </div>

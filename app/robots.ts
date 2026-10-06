@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://moneyva.in/sitemap.xml",
+    sitemap: "https://www.moneyva.in/sitemap.xml",
   };
 }

@@ -84,6 +84,17 @@ export const translations = {
       howDescription:
         "Enter a few numbers, understand the result, and make your next financial decision with confidence.",
 
+      seoTitle: "Salary & Financial Calculators for India",
+
+      seoDescription:
+        "Moneyva offers free online salary calculators for India. Calculate CTC to in-hand salary, salary hikes, and other financial estimates with simple, practical tools.",
+
+      seoCtcDescription:
+        "Use the CTC to in-hand salary calculator to estimate your monthly take-home salary from annual CTC, including salary components and deductions.",
+
+      seoHikeDescription:
+        "Use the salary hike calculator to calculate your hike percentage, annual increase, new CTC and monthly salary change.",
+
       step1Title: "Enter your numbers",
       step1Description:
         "Provide your salary, CTC, PF or other relevant financial details.",
@@ -126,8 +137,15 @@ export const translations = {
         enterSalaryDetails: "Enter Salary Details",
         currentAnnualCtc: "Current Annual CTC",
         newAnnualCtc: "New Annual CTC",
+        calculateUsing: "Calculate using",
+        newCtcOption: "New CTC",
+        newCtcOptionDescription: "Enter your new annual CTC",
+        percentageOption: "Hike Percentage",
+        percentageOptionDescription: "Enter your expected hike %",
+        expectedHikePercentage: "Expected Hike Percentage",
+        calculatedNewCtc: "Calculated New CTC",
         salaryHint:
-          "Enter your old and new CTC to see the percentage hike and monthly salary difference.",
+          "Choose either your new CTC or expected hike percentage. Moneyva will calculate the other value automatically.",
         resultTitle: "Your Salary Hike",
         hikePercentage: "Hike Percentage",
         annualIncrease: "Annual Increase",
@@ -332,6 +350,17 @@ export const translations = {
       howDescription:
         "कुछ आंकड़े दर्ज करें, परिणाम समझें और अपने अगले वित्तीय फैसले को बेहतर बनाएं।",
 
+      seoTitle: "भारत के लिए सैलरी और वित्तीय कैलकुलेटर",
+
+      seoDescription:
+        "Moneyva भारत के लिए मुफ्त ऑनलाइन सैलरी कैलकुलेटर उपलब्ध करता है। CTC से इन-हैंड सैलरी, सैलरी हाइक और अन्य वित्तीय गणनाओं का आसान तरीके से अनुमान लगाएं।",
+
+      seoCtcDescription:
+        "CTC से इन-हैंड सैलरी कैलकुलेटर की मदद से अपनी वार्षिक CTC से अनुमानित मासिक टेक-होम सैलरी, सैलरी घटक और कटौतियों को समझें।",
+
+      seoHikeDescription:
+        "सैलरी हाइक कैलकुलेटर से हाइक प्रतिशत, वार्षिक बढ़ोतरी, नई CTC और मासिक सैलरी में बदलाव की गणना करें।",
+
       step1Title: "अपने आंकड़े दर्ज करें",
       step1Description:
         "अपनी सैलरी, CTC, PF या अन्य जरूरी वित्तीय जानकारी दर्ज करें।",
@@ -374,8 +403,15 @@ export const translations = {
         enterSalaryDetails: "सैलरी की जानकारी दर्ज करें",
         currentAnnualCtc: "वर्तमान वार्षिक CTC",
         newAnnualCtc: "नई वार्षिक CTC",
+        calculateUsing: "किस आधार पर गणना करें",
+        newCtcOption: "नई CTC",
+        newCtcOptionDescription: "अपनी नई वार्षिक CTC दर्ज करें",
+        percentageOption: "हाइक प्रतिशत",
+        percentageOptionDescription: "अपनी अपेक्षित हाइक % दर्ज करें",
+        expectedHikePercentage: "अपेक्षित हाइक प्रतिशत",
+        calculatedNewCtc: "गणना की गई नई CTC",
         salaryHint:
-          "पुरानी और नई CTC दर्ज करें और हाइक प्रतिशत व मासिक सैलरी में बदलाव देखें।",
+          "नई CTC या अपेक्षित हाइक प्रतिशत में से कोई एक चुनें। Moneyva दूसरे मान की गणना अपने आप करेगा।",
         resultTitle: "आपकी सैलरी हाइक",
         hikePercentage: "हाइक प्रतिशत",
         annualIncrease: "वार्षिक बढ़ोतरी",

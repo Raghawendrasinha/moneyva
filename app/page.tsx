@@ -822,6 +822,129 @@ export default function Home() {
       </section>
 
       {/* =====================================================
+          SEO / ABOUT MONEYVA
+      ====================================================== */}
+
+      <section
+        className="
+          border-b
+          border-slate-200
+          bg-slate-50
+          dark:border-white/10
+          dark:bg-[#07111F]
+        "
+      >
+        <div
+          className="
+            mx-auto
+            max-w-7xl
+            px-5
+            py-20
+            sm:px-8
+            lg:py-24
+          "
+        >
+          <div className="mx-auto max-w-3xl text-center">
+            <p
+              className="
+                text-sm
+                font-bold
+                uppercase
+                tracking-[0.2em]
+                text-emerald-500
+                dark:text-emerald-400
+              "
+            >
+              Moneyva
+            </p>
+
+            <h2
+              className="
+                mt-3
+                text-3xl
+                font-extrabold
+                tracking-tight
+                sm:text-4xl
+              "
+            >
+              {t.seoTitle}
+            </h2>
+
+            <p
+              className="
+                mt-5
+                leading-7
+                text-slate-600
+                dark:text-slate-400
+              "
+            >
+              {t.seoDescription}
+            </p>
+          </div>
+
+          <div className="mx-auto mt-10 grid max-w-5xl gap-5 md:grid-cols-2">
+            <Link
+              href="/ctc-calculator"
+              className="
+                rounded-2xl
+                border
+                border-slate-200
+                bg-white
+                p-6
+                transition
+                hover:-translate-y-0.5
+                hover:border-emerald-300
+                hover:shadow-lg
+                dark:border-white/10
+                dark:bg-[#102131]
+              "
+            >
+              <h3 className="text-xl font-bold">
+                {t.ctcToInHand} Calculator
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600 dark:text-slate-400">
+                {t.seoCtcDescription}
+              </p>
+
+              <span className="mt-4 inline-block font-bold text-emerald-600 dark:text-emerald-400">
+                {t.tryIt} →
+              </span>
+            </Link>
+
+            <Link
+              href="/salary-hike-calculator"
+              className="
+                rounded-2xl
+                border
+                border-slate-200
+                bg-white
+                p-6
+                transition
+                hover:-translate-y-0.5
+                hover:border-emerald-300
+                hover:shadow-lg
+                dark:border-white/10
+                dark:bg-[#102131]
+              "
+            >
+              <h3 className="text-xl font-bold">
+                {t.salaryHikeCalculator}
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600 dark:text-slate-400">
+                {t.seoHikeDescription}
+              </p>
+
+              <span className="mt-4 inline-block font-bold text-emerald-600 dark:text-emerald-400">
+                {t.tryIt} →
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
           FINAL CTA
       ====================================================== */}
 

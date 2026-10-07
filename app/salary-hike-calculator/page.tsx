@@ -9,27 +9,56 @@ function formatCurrency(value: number) {
   return `₹${Math.round(value).toLocaleString("en-IN")}`;
 }
 
+type CalculationMode = "newCtc" | "percentage";
+
 export default function SalaryHikeCalculator() {
   const { language } = usePreferences();
   const t = translations[language].salaryHike;
 
   const [currentCtc, setCurrentCtc] = useState(0);
   const [newCtc, setNewCtc] = useState(0);
+  const [hikePercentageInput, setHikePercentageInput] = useState(0);
+  const [mode, setMode] = useState<CalculationMode>("newCtc");
 
   const result = useMemo(() => {
-    const increase = Math.max(0, newCtc - currentCtc);
+    if (currentCtc <= 0) {
+      return {
+        increase: 0,
+        hikePercentage: 0,
+        calculatedNewCtc: 0,
+        currentMonthly: 0,
+        newMonthly: 0,
+        monthlyIncrease: 0,
+      };
+    }
 
-    const hikePercentage =
-      currentCtc > 0 ? (increase / currentCtc) * 100 : 0;
+    if (mode === "percentage") {
+      const hikePercentage = Math.max(0, hikePercentageInput);
+      const increase = (currentCtc * hikePercentage) / 100;
+      const calculatedNewCtc = currentCtc + increase;
+
+      return {
+        increase,
+        hikePercentage,
+        calculatedNewCtc,
+        currentMonthly: currentCtc / 12,
+        newMonthly: calculatedNewCtc / 12,
+        monthlyIncrease: increase / 12,
+      };
+    }
+
+    const increase = Math.max(0, newCtc - currentCtc);
+    const hikePercentage = (increase / currentCtc) * 100;
 
     return {
       increase,
       hikePercentage,
+      calculatedNewCtc: newCtc,
       currentMonthly: currentCtc / 12,
       newMonthly: newCtc / 12,
       monthlyIncrease: increase / 12,
     };
-  }, [currentCtc, newCtc]);
+  }, [currentCtc, newCtc, hikePercentageInput, mode]);
 
   function handleNumberChange(
     value: string,
@@ -73,6 +102,8 @@ export default function SalaryHikeCalculator() {
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-[#102131]">
             <h2 className="text-xl font-bold">{t.enterSalaryDetails}</h2>
 
+            {/* CURRENT CTC */}
+
             <div className="mt-6">
               <label className="text-sm font-medium">
                 {t.currentAnnualCtc}
@@ -94,25 +125,12 @@ export default function SalaryHikeCalculator() {
                     handleNumberChange(e.target.value, setCurrentCtc)
                   }
                   className="
-                    w-full
-                    rounded-lg
-                    border
-                    border-slate-300
-                    bg-white
-                    py-3
-                    pl-10
-                    pr-4
-                    text-slate-900
-                    outline-none
-                    transition
-                    placeholder:text-slate-400
-                    focus:border-emerald-500
-                    focus:ring-1
-                    focus:ring-emerald-500
-                    dark:border-white/10
-                    dark:bg-[#07111F]
-                    dark:text-white
-                    dark:placeholder:text-slate-600
+                    w-full rounded-lg border border-slate-300 bg-white
+                    py-3 pl-10 pr-4 text-slate-900 outline-none transition
+                    placeholder:text-slate-400 focus:border-emerald-500
+                    focus:ring-1 focus:ring-emerald-500
+                    dark:border-white/10 dark:bg-[#07111F]
+                    dark:text-white dark:placeholder:text-slate-600
                   "
                 />
               </div>
@@ -124,54 +142,128 @@ export default function SalaryHikeCalculator() {
               )}
             </div>
 
-            <div className="mt-6">
-              <label className="text-sm font-medium">{t.newAnnualCtc}</label>
+            {/* MODE */}
 
-              <div className="relative mt-2">
-                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400">
-                  ₹
-                </span>
+            <div className="mt-7">
+              <p className="text-sm font-medium">{t.calculateUsing}</p>
 
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  inputMode="numeric"
-                  value={newCtc === 0 ? "" : newCtc}
-                  placeholder="0"
-                  onChange={(e) =>
-                    handleNumberChange(e.target.value, setNewCtc)
-                  }
-                  className="
-                    w-full
-                    rounded-lg
-                    border
-                    border-slate-300
-                    bg-white
-                    py-3
-                    pl-10
-                    pr-4
-                    text-slate-900
-                    outline-none
-                    transition
-                    placeholder:text-slate-400
-                    focus:border-emerald-500
-                    focus:ring-1
-                    focus:ring-emerald-500
-                    dark:border-white/10
-                    dark:bg-[#07111F]
-                    dark:text-white
-                    dark:placeholder:text-slate-600
-                  "
-                />
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setMode("newCtc")}
+                  className={`rounded-xl border p-4 text-left transition ${
+                    mode === "newCtc"
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-400 dark:bg-emerald-500/10 dark:text-emerald-300"
+                      : "border-slate-200 bg-white hover:border-slate-300 dark:border-white/10 dark:bg-white/[0.02] dark:hover:border-white/20"
+                  }`}
+                >
+                  <p className="font-bold">{t.newCtcOption}</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {t.newCtcOptionDescription}
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMode("percentage")}
+                  className={`rounded-xl border p-4 text-left transition ${
+                    mode === "percentage"
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-400 dark:bg-emerald-500/10 dark:text-emerald-300"
+                      : "border-slate-200 bg-white hover:border-slate-300 dark:border-white/10 dark:bg-white/[0.02] dark:hover:border-white/20"
+                  }`}
+                >
+                  <p className="font-bold">{t.percentageOption}</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {t.percentageOptionDescription}
+                  </p>
+                </button>
               </div>
-
-              {newCtc > 0 && (
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  {formatCurrency(newCtc)}
-                </p>
-              )}
             </div>
+
+            {/* NEW CTC MODE */}
+
+            {mode === "newCtc" && (
+              <div className="mt-6">
+                <label className="text-sm font-medium">
+                  {t.newAnnualCtc}
+                </label>
+
+                <div className="relative mt-2">
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400">
+                    ₹
+                  </span>
+
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputMode="numeric"
+                    value={newCtc === 0 ? "" : newCtc}
+                    placeholder="0"
+                    onChange={(e) =>
+                      handleNumberChange(e.target.value, setNewCtc)
+                    }
+                    className="
+                      w-full rounded-lg border border-slate-300 bg-white
+                      py-3 pl-10 pr-4 text-slate-900 outline-none transition
+                      placeholder:text-slate-400 focus:border-emerald-500
+                      focus:ring-1 focus:ring-emerald-500
+                      dark:border-white/10 dark:bg-[#07111F]
+                      dark:text-white dark:placeholder:text-slate-600
+                    "
+                  />
+                </div>
+
+                {newCtc > 0 && (
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {formatCurrency(newCtc)}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* PERCENTAGE MODE */}
+
+            {mode === "percentage" && (
+              <div className="mt-6">
+                <label className="text-sm font-medium">
+                  {t.expectedHikePercentage}
+                </label>
+
+                <div className="relative mt-2">
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    inputMode="decimal"
+                    value={
+                      hikePercentageInput === 0
+                        ? ""
+                        : hikePercentageInput
+                    }
+                    placeholder="0"
+                    onChange={(e) =>
+                      handleNumberChange(
+                        e.target.value,
+                        setHikePercentageInput,
+                      )
+                    }
+                    className="
+                      w-full rounded-lg border border-slate-300 bg-white
+                      py-3 pl-4 pr-12 text-slate-900 outline-none transition
+                      placeholder:text-slate-400 focus:border-emerald-500
+                      focus:ring-1 focus:ring-emerald-500
+                      dark:border-white/10 dark:bg-[#07111F]
+                      dark:text-white dark:placeholder:text-slate-600
+                    "
+                  />
+
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400">
+                    %
+                  </span>
+                </div>
+              </div>
+            )}
 
             <div className="mt-8 rounded-xl bg-slate-50 p-4 dark:bg-white/[0.03]">
               <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -208,7 +300,7 @@ export default function SalaryHikeCalculator() {
 
               <ResultItem
                 label={t.newMonthlyCtc}
-                value={formatCurrency(result.newMonthly)}
+                value={formatCurrency(result.calculatedNewCtc / 12)}
               />
 
               <ResultItem
@@ -216,6 +308,18 @@ export default function SalaryHikeCalculator() {
                 value={formatCurrency(result.monthlyIncrease)}
               />
             </div>
+
+            {mode === "percentage" && result.calculatedNewCtc > 0 && (
+              <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-500/20 dark:bg-emerald-500/10">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {t.calculatedNewCtc}
+                </p>
+
+                <p className="mt-1 text-xl font-black text-emerald-600 dark:text-emerald-400">
+                  {formatCurrency(result.calculatedNewCtc)}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { usePreferences } from "@/components/PreferencesProvider";
 
 import { calculateSalary, SalaryResult } from "@/lib/salary/calculator";
@@ -1507,6 +1508,195 @@ export default function CTCCalculator() {
             </strong>{" "}
             {t.disclaimer}
           </div>
+
+          {/* ==================================================
+              SEO / CTC EDUCATION CONTENT
+          ================================================== */}
+
+          <section
+            className="
+              mt-12
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white
+              p-6
+              shadow-sm
+              sm:p-8
+              dark:border-white/10
+              dark:bg-[#0D1B2A]
+            "
+          >
+            <div className="max-w-4xl">
+              <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">
+                {language === "hi" ? "CTC गाइड" : "CTC GUIDE"}
+              </p>
+
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
+                {language === "hi"
+                  ? "CTC और इन-हैंड सैलरी को समझें"
+                  : "Understanding CTC and In-Hand Salary"}
+              </h2>
+
+              <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">
+                {language === "hi"
+                  ? "CTC यानी Cost to Company वह कुल वार्षिक लागत है जो कंपनी किसी कर्मचारी पर खर्च करती है। इसमें केवल आपकी मासिक सैलरी ही नहीं, बल्कि PF, ग्रेच्युटी, वैरिएबल पे और अन्य कंपनी योगदान भी शामिल हो सकते हैं।"
+                  : "CTC, or Cost to Company, is the total annual cost a company incurs for an employee. It can include more than your monthly salary, such as PF contributions, gratuity, variable pay and other employer benefits."}
+              </p>
+
+              <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">
+                {language === "hi"
+                  ? "इन-हैंड सैलरी वह राशि है जो टैक्स, कर्मचारी PF और अन्य लागू कटौतियों के बाद आपके बैंक खाते में मिलती है। इसलिए आपकी CTC और वास्तविक मासिक टेक-होम सैलरी अलग-अलग हो सकती हैं।"
+                  : "In-hand salary is the amount you receive after applicable deductions such as income tax, employee PF and other deductions. This is why your CTC and actual monthly take-home salary can be different."}
+              </p>
+
+              <h3 className="mt-8 text-xl font-bold text-slate-900 dark:text-white">
+                {language === "hi"
+                  ? "इन-हैंड सैलरी कैसे कैलकुलेट होती है?"
+                  : "How Is In-Hand Salary Calculated?"}
+              </h3>
+
+              <p className="mt-3 leading-7 text-slate-600 dark:text-slate-300">
+                {language === "hi"
+                  ? "आमतौर पर कैलकुलेशन CTC से शुरू होती है। पहले CTC के विभिन्न घटकों जैसे बेसिक सैलरी, HRA, अन्य अलाउंस, PF, ग्रेच्युटी और वैरिएबल पे को समझा जाता है। इसके बाद कर्मचारी की टैक्स व्यवस्था और लागू कटौतियों के आधार पर अनुमानित टेक-होम सैलरी निकाली जाती है।"
+                  : "The calculation generally starts with your CTC. Salary components such as basic salary, HRA, other allowances, PF, gratuity and variable pay are considered first. Applicable deductions and the selected tax regime are then used to estimate your take-home salary."}
+              </p>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {[
+                  {
+                    title: "Basic Salary",
+                    text:
+                      language === "hi"
+                        ? "Basic salary आपके salary structure का एक महत्वपूर्ण हिस्सा है और PF तथा अन्य components की गणना को प्रभावित कर सकती है।"
+                        : "Basic salary is an important part of your salary structure and can affect the calculation of PF and other components.",
+                  },
+                  {
+                    title: "HRA",
+                    text:
+                      language === "hi"
+                        ? "House Rent Allowance आपकी salary structure का हिस्सा हो सकता है और कुछ परिस्थितियों में tax calculation को प्रभावित कर सकता है।"
+                        : "House Rent Allowance can be part of your salary structure and may affect tax calculations depending on your circumstances.",
+                  },
+                  {
+                    title: "EPF / PF",
+                    text:
+                      language === "hi"
+                        ? "Employee और employer PF contributions CTC और monthly take-home के बीच अंतर पैदा कर सकते हैं।"
+                        : "Employee and employer PF contributions can create a difference between your CTC and monthly take-home salary.",
+                  },
+                  {
+                    title: "Gratuity",
+                    text:
+                      language === "hi"
+                        ? "कुछ कंपनियां gratuity को CTC में शामिल करती हैं। यह आमतौर पर सीधे monthly in-hand salary का हिस्सा नहीं होती।"
+                        : "Some companies include gratuity in CTC. It is generally not paid as part of your regular monthly in-hand salary.",
+                  },
+                  {
+                    title: "Variable Pay",
+                    text:
+                      language === "hi"
+                        ? "Variable pay performance या company policy पर निर्भर हो सकता है और fixed monthly salary से अलग हो सकता है।"
+                        : "Variable pay may depend on performance or company policy and can differ from your fixed monthly salary.",
+                  },
+                  {
+                    title: "Income Tax",
+                    text:
+                      language === "hi"
+                        ? "Income tax आपकी taxable income और चुनी गई tax regime के आधार पर आपकी take-home salary को प्रभावित कर सकता है।"
+                        : "Income tax can affect your take-home salary based on your taxable income and selected tax regime.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.title}
+                    className="
+                      rounded-xl
+                      border
+                      border-slate-200
+                      bg-slate-50
+                      p-5
+                      dark:border-white/10
+                      dark:bg-white/5
+                    "
+                  >
+                    <h4 className="font-semibold text-slate-900 dark:text-white">
+                      {item.title}
+                    </h4>
+                    <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      {item.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 rounded-xl border border-blue-100 bg-blue-50 p-5 dark:border-blue-400/20 dark:bg-blue-400/10">
+                <h3 className="font-bold text-slate-900 dark:text-white">
+                  {language === "hi"
+                    ? "उदाहरण: ₹10 लाख CTC"
+                    : "Example: ₹10 Lakh CTC"}
+                </h3>
+
+                <p className="mt-2 leading-7 text-slate-700 dark:text-slate-300">
+                  {language === "hi"
+                    ? "मान लीजिए आपकी annual CTC ₹10 लाख है। इसका मतलब यह नहीं है कि आपको हर महीने ₹83,333 सीधे बैंक खाते में मिलेंगे। PF, gratuity, variable pay और income tax जैसी चीजों के कारण actual monthly take-home इससे कम या अलग हो सकता है।"
+                    : "Suppose your annual CTC is ₹10 lakh. This does not mean you will receive ₹83,333 directly in your bank account every month. PF, gratuity, variable pay and income tax can make your actual monthly take-home lower or different."}
+                </p>
+              </div>
+
+              <h3 className="mt-8 text-xl font-bold text-slate-900 dark:text-white">
+                {language === "hi"
+                  ? "Moneyva CTC Calculator का उपयोग कैसे करें"
+                  : "How to Use the Moneyva CTC Calculator"}
+              </h3>
+
+              <ol className="mt-4 space-y-3 text-slate-600 dark:text-slate-300">
+                {[
+                  language === "hi"
+                    ? "अपनी annual CTC दर्ज करें।"
+                    : "Enter your annual CTC.",
+                  language === "hi"
+                    ? "अपनी salary structure के अनुसार simple या detailed mode चुनें।"
+                    : "Choose simple or detailed mode based on your salary structure.",
+                  language === "hi"
+                    ? "PF और income tax regime जैसी applicable settings चुनें।"
+                    : "Select applicable settings such as PF and income tax regime.",
+                  language === "hi"
+                    ? "अपनी estimated monthly take-home salary और salary breakdown देखें।"
+                    : "View your estimated monthly take-home salary and salary breakdown.",
+                ].map((step, index) => (
+                  <li key={step} className="flex gap-3">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+                      {index + 1}
+                    </span>
+                    <span className="pt-0.5">{step}</span>
+                  </li>
+                ))}
+              </ol>
+
+              <div className="mt-8 rounded-xl border border-slate-200 p-5 dark:border-white/10">
+                <h3 className="font-bold text-slate-900 dark:text-white">
+                  {language === "hi"
+                    ? "अपनी Salary Hike भी कैलकुलेट करें"
+                    : "Calculate Your Salary Hike Too"}
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  {language === "hi"
+                    ? "अगर आप नई CTC या expected hike percentage के आधार पर अपनी नई salary समझना चाहते हैं, तो Moneyva Salary Hike Calculator का उपयोग करें।"
+                    : "If you want to calculate your new salary based on a new CTC or expected hike percentage, use the Moneyva Salary Hike Calculator."}
+                </p>
+
+                <Link
+                  href="/salary-hike-calculator"
+                  className="mt-4 inline-flex font-semibold text-blue-600 hover:underline dark:text-blue-400"
+                >
+                  {language === "hi"
+                    ? "Salary Hike Calculator देखें →"
+                    : "Open Salary Hike Calculator →"}
+                </Link>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
     </main>

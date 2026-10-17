@@ -3,6 +3,7 @@ import "./globals.css";
 
 import { PreferencesProvider } from "@/components/PreferencesProvider";
 import MoneyvaHeader from "@/components/MoneyvaHeader";
+import MoneyvaFooter from "@/components/MoneyvaFooter";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.moneyva.in"),
@@ -84,6 +85,7 @@ export default function RootLayout({
         <PreferencesProvider>
           <MoneyvaHeader />
           {children}
+          <MoneyvaFooter />
         </PreferencesProvider>
       </body>
     </html>

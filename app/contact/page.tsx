@@ -42,7 +42,7 @@ export default function ContactPage() {
         type: "success",
         text: hi
           ? "धन्यवाद! आपका संदेश प्राप्त हो गया है।"
-          : "Thank you! Your message has been received.",
+          : "Thank you for contacting us! We will get back to you within 3 working days.",
       });
       setName("");
       setEmail("");

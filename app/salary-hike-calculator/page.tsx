@@ -332,6 +332,7 @@ export default function SalaryHikeCalculator() {
           </Link>
         </div>
         
+        {language === "en" && (
         <section className="mt-16 border-t border-slate-200 pt-12 dark:border-white/10">
           <div className="text-center">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
@@ -508,42 +509,178 @@ export default function SalaryHikeCalculator() {
             </Link>
           </div>
         </section>
+        )}
 
-        <section className="mt-12 border-t border-slate-200 pt-10 dark:border-white/10">
-          <div className="text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
-              सैलरी हाइक गाइड
-            </p>
+        {language === "hi" && (
+          <section className="mt-16 border-t border-slate-200 pt-12 dark:border-white/10">
+            <div className="text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
+                सैलरी हाइक गाइड
+              </p>
 
-            <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">
-              सैलरी हाइक और नई CTC को समझें
-            </h2>
+              <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">
+                सैलरी हाइक और नई CTC को समझें
+              </h2>
 
-            <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-400">
-              सैलरी हाइक आपकी वर्तमान CTC की तुलना में आपकी वार्षिक CTC में
-              होने वाली बढ़ोतरी है। उदाहरण के लिए, अगर आपकी वर्तमान CTC ₹10 लाख
-              और नई CTC ₹12 लाख है, तो वार्षिक बढ़ोतरी ₹2 लाख और सैलरी हाइक 20%
-              होगी।
-            </p>
-          </div>
-
-          <div className="mt-8">
-            <h3 className="text-xl font-bold">
-              सैलरी हाइक प्रतिशत कैसे निकाला जाता है?
-            </h3>
-
-            <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-400">
-              सैलरी हाइक प्रतिशत आपकी नई CTC में आपकी वर्तमान CTC की तुलना में
-              हुई बढ़ोतरी को दर्शाता है।
-            </p>
-
-            <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-center dark:border-emerald-500/20 dark:bg-emerald-500/10">
-              <p className="text-base font-bold text-emerald-700 dark:text-emerald-300">
-                हाइक % = ((नई CTC − वर्तमान CTC) ÷ वर्तमान CTC) × 100
+              <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-400">
+                सैलरी हाइक आपकी वर्तमान CTC की तुलना में आपकी वार्षिक CTC में
+                होने वाली बढ़ोतरी है। उदाहरण के लिए, अगर आपकी वर्तमान CTC ₹10 लाख
+                और नई CTC ₹12 लाख है, तो वार्षिक बढ़ोतरी ₹2 लाख और सैलरी हाइक 20%
+                होगी।
               </p>
             </div>
-          </div>
-        </section>
+
+            <div className="mt-10">
+              <h3 className="text-xl font-bold">
+                सैलरी हाइक प्रतिशत कैसे निकाला जाता है?
+              </h3>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-400">
+                सैलरी हाइक प्रतिशत बताता है कि आपकी वर्तमान CTC की तुलना में नई
+                CTC कितने प्रतिशत बढ़ी है। इसकी गणना इस फॉर्मूले से होती है:
+              </p>
+
+              <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-center dark:border-emerald-500/20 dark:bg-emerald-500/10">
+                <p className="text-base font-bold text-emerald-700 dark:text-emerald-300">
+                  हाइक % = ((नई CTC − वर्तमान CTC) ÷ वर्तमान CTC) × 100
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                <h3 className="font-bold">वर्तमान CTC</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  सैलरी बढ़ने से पहले आपकी मौजूदा वार्षिक CTC।
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                <h3 className="font-bold">हाइक प्रतिशत</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  आपकी वर्तमान वार्षिक CTC की तुलना में हुई प्रतिशत बढ़ोतरी।
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                <h3 className="font-bold">वार्षिक बढ़ोतरी</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  हाइक के बाद आपकी सालाना CTC में जुड़ी अतिरिक्त राशि।
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                <h3 className="font-bold">नई CTC</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  सैलरी बढ़ोतरी लागू होने के बाद आपकी संशोधित वार्षिक CTC।
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                <h3 className="font-bold">मासिक बढ़ोतरी</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  वार्षिक बढ़ोतरी के आधार पर मासिक CTC में होने वाली अनुमानित वृद्धि।
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                <h3 className="font-bold">नई मासिक CTC</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  सैलरी हाइक के बाद आपकी संशोधित मासिक CTC।
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <h3 className="text-xl font-bold">सैलरी हाइक का उदाहरण</h3>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-400">
+                मान लीजिए आपकी वर्तमान CTC ₹10 लाख सालाना है और नई CTC ₹12 लाख
+                है। आपकी वार्षिक बढ़ोतरी ₹2 लाख होगी, यानी 20% की सैलरी हाइक।
+              </p>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                <div className="rounded-2xl bg-slate-50 p-5 dark:bg-white/5">
+                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    वर्तमान CTC
+                  </p>
+                  <p className="mt-1 text-xl font-black">₹10,00,000</p>
+                </div>
+
+                <div className="rounded-2xl bg-slate-50 p-5 dark:bg-white/5">
+                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    सैलरी हाइक
+                  </p>
+                  <p className="mt-1 text-xl font-black text-emerald-600 dark:text-emerald-400">
+                    20%
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-slate-50 p-5 dark:bg-white/5">
+                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    नई CTC
+                  </p>
+                  <p className="mt-1 text-xl font-black">₹12,00,000</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <h3 className="text-xl font-bold">
+                Moneyva सैलरी हाइक कैलकुलेटर का उपयोग कैसे करें?
+              </h3>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                  <p className="font-bold">1. अपनी वर्तमान CTC दर्ज करें</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    गणना शुरू करने के लिए अपनी मौजूदा वार्षिक CTC दर्ज करें।
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                  <p className="font-bold">2. गणना का तरीका चुनें</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    अपनी अपेक्षित नई CTC या हाइक प्रतिशत में से कोई एक दर्ज करें।
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                  <p className="font-bold">3. सैलरी बढ़ोतरी देखें</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    Moneyva आपके हाइक प्रतिशत, वार्षिक बढ़ोतरी और नई CTC की गणना करेगा।
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
+                  <p className="font-bold">4. मासिक राशि की तुलना करें</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    अपनी वर्तमान मासिक CTC, नई मासिक CTC और मासिक बढ़ोतरी देखें।
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-500/20 dark:bg-emerald-500/10">
+              <h3 className="text-lg font-bold">
+                अपनी वास्तविक इन-हैंड सैलरी का अनुमान लगाना चाहते हैं?
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                आपकी CTC और मासिक इन-हैंड सैलरी एक जैसी नहीं होती। सामान्य सैलरी
+                घटकों और कटौतियों के बाद अपनी अनुमानित मासिक टेक-होम सैलरी जानने
+                के लिए Moneyva के CTC से इन-हैंड सैलरी कैलकुलेटर का उपयोग करें।
+              </p>
+
+              <Link
+                href="/ctc-calculator"
+                className="mt-4 inline-block text-sm font-bold text-emerald-700 transition hover:text-emerald-600 dark:text-emerald-300"
+              >
+                इन-हैंड सैलरी कैलकुलेट करें →
+              </Link>
+            </div>
+          </section>
+        )}
       </section>
     </main>
   );

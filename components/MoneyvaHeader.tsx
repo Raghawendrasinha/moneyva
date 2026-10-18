@@ -117,6 +117,23 @@ export default function MoneyvaHeader() {
           </Link>
 
 
+          {/* TICKET STATUS BUTTON */}
+
+          <Link
+            href="/ticket-status"
+            className={`
+              rounded-xl border px-3 py-2 text-sm font-semibold transition
+              ${
+                theme === "dark"
+                  ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-300 hover:bg-emerald-400/20"
+                  : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+              }
+            `}
+          >
+            {isHindi ? "टिकट स्टेटस" : "Ticket Status"}
+          </Link>
+
+
           {/* THEME BUTTON */}
 
           <button
@@ -192,6 +209,20 @@ export default function MoneyvaHeader() {
         ================================= */}
 
         <div className="flex items-center gap-2 md:hidden">
+
+          <Link
+            href="/ticket-status"
+            className={`
+              rounded-lg border px-2 py-2 text-xs font-semibold transition
+              ${
+                theme === "dark"
+                  ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-300"
+                  : "border-emerald-200 bg-emerald-50 text-emerald-700"
+              }
+            `}
+          >
+            {isHindi ? "टिकट" : "Ticket Status"}
+          </Link>
 
           <button
             type="button"

@@ -99,6 +99,15 @@ export default function ContactPage() {
             : "Have a question, suggestion or issue? Fill out the form below and send us a message."}
         </p>
 
+        <div className="mt-6">
+          <a
+            href="/ticket-status"
+            className="inline-flex w-full items-center justify-center rounded-xl border border-emerald-600 px-5 py-3 font-bold text-emerald-800 transition hover:bg-emerald-50 dark:border-emerald-400 dark:text-emerald-200 dark:hover:bg-emerald-500/10"
+          >
+            {hi ? "टिकट का स्टेटस चेक करें" : "Check Ticket Status"}
+          </a>
+        </div>
+
         {ticketNumber && (
           <section
             aria-live="polite"

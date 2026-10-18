@@ -119,5 +119,6 @@ export function isAllowedOrigin(origin: string | null) {
     "http://127.0.0.1:3000",
     "https://moneyva.in",
     "https://www.moneyva.in",
+    "https://admin.moneyva.in",
   ]).has(origin);
 }

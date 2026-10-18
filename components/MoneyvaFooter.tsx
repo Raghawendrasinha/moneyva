@@ -75,7 +75,7 @@ export default function MoneyvaFooter() {
                 {text.howItWorks}
               </Link>
               <span className={comingSoonClass}>{text.about}</span>
-              <span className={comingSoonClass}>{text.privacy}</span>
+              <Link href="/privacy" className={linkClass}>{text.privacy}</Link>
               <Link href="/disclaimer" className={linkClass}>
                 {text.disclaimer}
               </Link>

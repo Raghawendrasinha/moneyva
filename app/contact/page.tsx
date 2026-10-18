@@ -12,6 +12,8 @@ export default function ContactPage() {
   const [message, setMessage] = useState("");
   const [website, setWebsite] = useState("");
   const [busy, setBusy] = useState(false);
+  const [ticketNumber, setTicketNumber] = useState<string | null>(null);
+  const [acknowledgementEmailSent, setAcknowledgementEmailSent] = useState(true);
   const [status, setStatus] = useState<{
     type: "success" | "error";
     text: string;
@@ -21,6 +23,7 @@ export default function ContactPage() {
     event.preventDefault();
     setBusy(true);
     setStatus(null);
+    setTicketNumber(null);
 
     try {
       const response = await fetch("/api/contact", {
@@ -34,16 +37,29 @@ export default function ContactPage() {
       if (!response.ok) {
         throw new Error(
           result.error ||
-            (hi ? "संदेश भेजा नहीं जा सका। दोबारा प्रयास करें।" : "Unable to send your message.")
+            (hi
+              ? "संदेश भेजा नहीं जा सका। दोबारा प्रयास करें।"
+              : "Unable to send your message.")
         );
       }
 
+      if (typeof result.ticketNumber !== "string" || !result.ticketNumber) {
+        throw new Error(
+          hi
+            ? "जवाब प्राप्त हुआ, लेकिन टिकट नंबर नहीं मिला। कृपया हमसे संपर्क करें।"
+            : "We received a response but could not retrieve your ticket number. Please contact us."
+        );
+      }
+
+      setTicketNumber(result.ticketNumber);
+      setAcknowledgementEmailSent(result.acknowledgementEmailSent !== false);
       setStatus({
         type: "success",
         text: hi
-          ? "धन्यवाद! आपका संदेश प्राप्त हो गया है।"
-          : "Thank you for contacting us! We will get back to you within 3 working days.",
+          ? "धन्यवाद! आपका अनुरोध दर्ज कर लिया गया है। हम 3 कार्यदिवसों के भीतर जवाब देने का प्रयास करेंगे।"
+          : "Thank you! Your request has been registered. We aim to respond within 3 working days.",
       });
+
       setName("");
       setEmail("");
       setMessage("");
@@ -72,14 +88,45 @@ export default function ContactPage() {
         <p className="text-sm font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-300">
           {hi ? "हमसे संपर्क करें" : "GET IN TOUCH"}
         </p>
+
         <h1 className="mt-3 text-4xl font-extrabold tracking-tight">
           {hi ? "संपर्क करें" : "Contact Us"}
         </h1>
+
         <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">
           {hi
             ? "कोई सवाल, सुझाव या समस्या है? नीचे फॉर्म भरें।"
             : "Have a question, suggestion or issue? Fill out the form below and send us a message."}
         </p>
+
+        {ticketNumber && (
+          <section
+            aria-live="polite"
+            className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-500/30 dark:bg-emerald-500/10"
+          >
+            <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">
+              {hi ? "आपका टिकट नंबर" : "Your Ticket Number"}
+            </p>
+
+            <p className="mt-2 break-all text-2xl font-extrabold tracking-wide text-slate-900 dark:text-white">
+              {ticketNumber}
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-700 dark:text-slate-200">
+              {hi
+                ? "कृपया इस नंबर को भविष्य के संदर्भ के लिए सुरक्षित रखें।"
+                : "Please save this number for future reference."}
+            </p>
+
+            {!acknowledgementEmailSent && (
+              <p className="mt-3 text-sm leading-6 text-amber-800 dark:text-amber-200">
+                {hi
+                  ? "आपका टिकट दर्ज हो गया है, लेकिन पुष्टि वाला ईमेल नहीं भेजा जा सका। कृपया टिकट नंबर सुरक्षित रखें।"
+                  : "Your ticket is registered, but we could not send the acknowledgement email. Please save your ticket number."}
+              </p>
+            )}
+          </section>
+        )}
 
         <form
           onSubmit={handleSubmit}
@@ -129,7 +176,9 @@ export default function ContactPage() {
               name="message"
               className={inputClass}
               placeholder={
-                hi ? "बताएँ कि हम आपकी कैसे मदद कर सकते हैं..." : "Tell us how we can help..."
+                hi
+                  ? "बताएँ कि हम आपकी कैसे मदद कर सकते हैं..."
+                  : "Tell us how we can help..."
               }
               value={message}
               onChange={(event) => setMessage(event.target.value)}
@@ -139,11 +188,16 @@ export default function ContactPage() {
               required
             />
             <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              {hi ? "कम से कम 10 अक्षर लिखें।" : "Please enter at least 10 characters."}
+              {hi
+                ? "कम से कम 10 अक्षर लिखें।"
+                : "Please enter at least 10 characters."}
             </p>
           </div>
 
-          <div aria-hidden="true" className="absolute -left-[10000px] h-px w-px overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="absolute -left-[10000px] h-px w-px overflow-hidden"
+          >
             <label htmlFor="contact-website">Website</label>
             <input
               id="contact-website"

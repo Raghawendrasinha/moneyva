@@ -1,3 +1,4 @@
+import { createHash, randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
@@ -8,9 +9,31 @@ export const runtime = "nodejs";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function createTicketNumber() {
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const suffix = randomBytes(4).toString("hex").slice(0, 6).toUpperCase();
+  return `MV-${date}-${suffix}`;
+}
+
+function hashToken(token: string) {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, (character) => {
+    const entities: Record<string, string> = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return entities[character];
+  });
+}
+
 export async function POST(request: Request) {
   try {
-    // Accept requests from the local app and the official Moneyva site.
     const origin = request.headers.get("origin");
     const allowedOrigins = new Set([
       "http://localhost:3000",
@@ -20,15 +43,16 @@ export async function POST(request: Request) {
     ]);
 
     if (origin && !allowedOrigins.has(origin)) {
-      return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Invalid request origin." },
+        { status: 403 }
+      );
     }
 
-    // Require persistent rate limiting in every environment.
     const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
     const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
     if (!redisUrl || !redisToken) {
-      console.error("Upstash rate-limiting configuration is incomplete.");
       return NextResponse.json(
         { error: "Contact service is temporarily unavailable." },
         { status: 503 }
@@ -42,7 +66,6 @@ export async function POST(request: Request) {
       prefix: "moneyva:contact",
     });
 
-    // Prefer the platform-provided client IP header.
     const ip =
       request.headers.get("x-real-ip")?.trim() ||
       request.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ||
@@ -51,40 +74,49 @@ export async function POST(request: Request) {
     const rateLimit = await limiter.limit(ip);
 
     if (!rateLimit.success) {
-      const retryAfter = Math.max(
-        1,
-        Math.ceil((rateLimit.reset - Date.now()) / 1000)
-      );
-
       return NextResponse.json(
         { error: "Too many submissions. Please try again later." },
         {
           status: 429,
-          headers: { "Retry-After": String(retryAfter) },
+          headers: {
+            "Retry-After": String(
+              Math.max(1, Math.ceil((rateLimit.reset - Date.now()) / 1000))
+            ),
+          },
         }
       );
     }
 
     const contentLength = Number(request.headers.get("content-length") || 0);
+
     if (contentLength > 12_000) {
-      return NextResponse.json({ error: "Message is too large." }, { status: 413 });
+      return NextResponse.json(
+        { error: "Request is too large." },
+        { status: 413 }
+      );
     }
 
     const body: unknown = await request.json();
-    if (!body || typeof body !== "object") {
-      return NextResponse.json({ error: "Invalid form submission." }, { status: 400 });
+
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json(
+        { error: "Invalid request." },
+        { status: 400 }
+      );
     }
 
     const data = body as Record<string, unknown>;
 
-    // Honeypot: bots may fill this hidden field; real users should leave it blank.
+    // Honeypot: silently accept automated bot submissions.
     if (typeof data.website === "string" && data.website.trim()) {
       return NextResponse.json({ success: true });
     }
 
     const name = typeof data.name === "string" ? data.name.trim() : "";
-    const email = typeof data.email === "string" ? data.email.trim().toLowerCase() : "";
-    const message = typeof data.message === "string" ? data.message.trim() : "";
+    const email =
+      typeof data.email === "string" ? data.email.trim().toLowerCase() : "";
+    const message =
+      typeof data.message === "string" ? data.message.trim() : "";
 
     if (
       !name ||
@@ -95,7 +127,7 @@ export async function POST(request: Request) {
       message.length > 5000
     ) {
       return NextResponse.json(
-        { error: "Please check your name, email address and message." },
+        { error: "Please check your name, email and message." },
         { status: 400 }
       );
     }
@@ -107,9 +139,8 @@ export async function POST(request: Request) {
     const sender = process.env.CONTACT_FROM_EMAIL;
 
     if (!supabaseUrl || !supabaseSecret || !resendKey || !recipient || !sender) {
-      console.error("Contact service environment variables are incomplete.");
       return NextResponse.json(
-        { error: "Contact service is not configured yet. Please try again later." },
+        { error: "Contact service is temporarily unavailable." },
         { status: 503 }
       );
     }
@@ -122,51 +153,169 @@ export async function POST(request: Request) {
       },
     });
 
-    // Save the enquiry before sending the email, so it isn't lost if email fails.
-    const { data: saved, error: saveError } = await supabase
-      .from("contact_messages")
-      .insert({ name, email, message })
-      .select("id")
-      .single();
+    const trackingToken = randomBytes(32).toString("base64url");
+    const trackingTokenHash = hashToken(trackingToken);
 
-    if (saveError || !saved) {
-      console.error("Could not save contact enquiry:", saveError?.message);
+    let ticketNumber = "";
+    let savedId: string | null = null;
+
+    // Retry if a generated ticket number or token collides with an existing record.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      ticketNumber = createTicketNumber();
+
+      const { data: saved, error: saveError } = await supabase
+        .from("contact_messages")
+        .insert({
+          name,
+          email,
+          message,
+          ticket_number: ticketNumber,
+          status: "Open",
+          tracking_token_hash: trackingTokenHash,
+          acknowledgement_email_status: "pending",
+        })
+        .select("id")
+        .single();
+
+      if (!saveError && saved) {
+        savedId = String(saved.id);
+        break;
+      }
+
+      if (saveError?.code === "23505") {
+        continue;
+      }
+
+      console.error("Moneyva ticket save failed:", saveError?.code);
       return NextResponse.json(
-        { error: "We couldn't save your message. Please try again." },
+        { error: "We could not register your request. Please try again." },
         { status: 500 }
       );
     }
 
-    const resend = new Resend(resendKey);
-    const { error: emailError } = await resend.emails.send({
-      from: sender,
-      to: [recipient],
-      replyTo: email,
-      subject: `Moneyva enquiry from ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
-    });
-
-    if (emailError) {
-      console.error("Contact notification failed:", emailError.message);
-      await supabase
-        .from("contact_messages")
-        .update({ email_status: "failed" })
-        .eq("id", saved.id);
-
+    if (!savedId) {
       return NextResponse.json(
-        { error: "Your message was saved, but the email notification failed." },
-        { status: 502 }
+        { error: "We could not generate a ticket. Please try again." },
+        { status: 500 }
       );
     }
 
-    await supabase
-      .from("contact_messages")
-      .update({ email_status: "sent" })
-      .eq("id", saved.id);
+    const siteUrl = (
+      process.env.SITE_URL ||
+      (process.env.NODE_ENV === "production"
+        ? "https://www.moneyva.in"
+        : "http://localhost:3000")
+    ).replace(/\/+$/, "");
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Contact API error:", error);
+    const trackingUrl =
+      `${siteUrl}/track-ticket?token=${encodeURIComponent(trackingToken)}`;
+
+    const safeName = escapeHtml(name);
+    const safeTicketNumber = escapeHtml(ticketNumber);
+    const safeMessage = escapeHtml(message);
+
+    const resend = new Resend(resendKey);
+
+    const internalEmail = resend.emails.send({
+      from: sender,
+      to: [recipient],
+      replyTo: email,
+      subject: `[${ticketNumber}] Moneyva enquiry from ${name}`,
+      text:
+        `Ticket Number: ${ticketNumber}\n` +
+        `Status: Open\n` +
+        `Name: ${name}\nEmail: ${email}\n\n` +
+        `Message:\n${message}`,
+      html:
+        `<h2>New Moneyva enquiry</h2>` +
+        `<p><strong>Ticket:</strong> ${safeTicketNumber}</p>` +
+        `<p><strong>Status:</strong> Open</p>` +
+        `<p><strong>Name:</strong> ${safeName}</p>` +
+        `<p><strong>Email:</strong> ${escapeHtml(email)}</p>` +
+        `<p><strong>Message:</strong></p><p>${safeMessage.replace(/\n/g, "<br>")}</p>`,
+    });
+
+    const acknowledgementEmail = resend.emails.send({
+      from: sender,
+      to: [email],
+      replyTo: recipient,
+      subject: `Moneyva support ticket ${ticketNumber} received`,
+      text: [
+        `Dear ${name},`,
+        "",
+        "Thank you for contacting Moneyva.",
+        "We have received and registered your complaint/query.",
+        "",
+        "Your original message:",
+        message,
+        "",
+        `Your Ticket Number is: ${ticketNumber}`,
+        "Our team will review your message.",
+        "We aim to respond within 3 working days.",
+        "Please keep your ticket number for future reference.",
+        `Track your ticket status securely: ${trackingUrl}`,
+        "Thank you for your patience.",
+        "Regards,",
+        "Moneyva Support Team",
+      ].join("\n"),
+      html: `
+        <p>Dear ${safeName},</p>
+        <p>Thank you for contacting Moneyva.</p>
+        <p>We have received and registered your complaint/query.</p>
+        <h3>Your original message</h3>
+        <p>${safeMessage.replace(/\n/g, "<br>")}</p>
+        <p>Your Ticket Number is: <strong>${safeTicketNumber}</strong></p>
+        <p>Our team will review your message.</p>
+        <p>We aim to respond within <strong>3 working days</strong>.</p>
+        <p>Please keep your ticket number for future reference.</p>
+        <p><a href="${escapeHtml(trackingUrl)}">Track your ticket status securely</a></p>
+        <p>Thank you for your patience.</p>
+        <p>Regards,<br>Moneyva Support Team</p>
+      `,
+    });
+
+    // A failed email must not erase the ticket or encourage duplicate submissions.
+    const [internalResult, acknowledgementResult] = await Promise.allSettled([
+      internalEmail,
+      acknowledgementEmail,
+    ]);
+
+    const internalFailed =
+      internalResult.status === "rejected" ||
+      Boolean(internalResult.value.error);
+
+    const acknowledgementFailed =
+      acknowledgementResult.status === "rejected" ||
+      Boolean(acknowledgementResult.value.error);
+
+    const { error: updateError } = await supabase
+      .from("contact_messages")
+      .update({
+        email_status: internalFailed ? "failed" : "sent",
+        acknowledgement_email_status: acknowledgementFailed
+          ? "failed"
+          : "sent",
+      })
+      .eq("id", savedId);
+
+    if (updateError) {
+      console.error("Moneyva ticket email status update failed:", updateError.code);
+    }
+
+    if (internalFailed) {
+      console.error("Moneyva internal notification email failed.");
+    }
+
+    if (acknowledgementFailed) {
+      console.error("Moneyva customer acknowledgement email failed.");
+    }
+
+    return NextResponse.json({
+      success: true,
+      ticketNumber,
+      acknowledgementEmailSent: !acknowledgementFailed,
+    });
+  } catch {
     return NextResponse.json(
       { error: "Something went wrong. Please try again later." },
       { status: 500 }

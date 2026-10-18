@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
 
 import { PreferencesProvider } from "@/components/PreferencesProvider";
@@ -67,11 +68,17 @@ const websiteJsonLd = {
   inLanguage: "en-IN",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const requestHeaders = await headers();
+  const hostname = (requestHeaders.get("host") ?? "")
+    .split(":")[0]
+    .toLowerCase();
+  const isAdminHost = hostname === "admin.moneyva.in";
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
@@ -83,9 +90,9 @@ export default function RootLayout({
         />
 
         <PreferencesProvider>
-          <MoneyvaHeader />
+          <MoneyvaHeader isAdminHost={isAdminHost} />
           {children}
-          <MoneyvaFooter />
+          {!isAdminHost && <MoneyvaFooter />}
         </PreferencesProvider>
       </body>
     </html>

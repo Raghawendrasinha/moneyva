@@ -1,61 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 
+function brandedNotFound(request: NextRequest) {
+  const url = request.nextUrl.clone();
+  url.pathname = "/__moneyva_not_found";
+  url.search = "";
+  return NextResponse.rewrite(url);
+}
+
 export function proxy(request: NextRequest) {
   const hostname = request.nextUrl.hostname.toLowerCase();
+  const pathname = request.nextUrl.pathname;
 
-  // Hide the admin dashboard from the public hostnames.
-  if (
-    hostname === "moneyva.in" ||
-    hostname === "www.moneyva.in"
-  ) {
-    if (request.nextUrl.pathname === "/admin" ||
-        request.nextUrl.pathname.startsWith("/admin/")) {
-      return new NextResponse("Not Found", {
-        status: 404,
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "no-store",
-          "X-Robots-Tag": "noindex, nofollow",
-        },
-      });
+  // Allow the internal destination used to render the branded 404 page.
+  if (pathname === "/__moneyva_not_found") {
+    return NextResponse.next();
+  }
+
+  // Hide admin pages on public hostnames.
+  if (hostname === "moneyva.in" || hostname === "www.moneyva.in") {
+    if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+      return brandedNotFound(request);
     }
 
     return NextResponse.next();
   }
 
-  // Apply admin-only routing exclusively to the admin subdomain.
+  // Apply admin-only routing to the admin subdomain.
   if (hostname !== "admin.moneyva.in") {
     return NextResponse.next();
   }
 
-  const pathname = request.nextUrl.pathname;
-
-  // Allow the existing admin dashboard and its authenticated API routes.
-  if (
-    pathname === "/admin" ||
-    pathname.startsWith("/api/admin/")
-  ) {
+  // Only the dashboard and its API routes are available here.
+  if (pathname === "/admin" || pathname.startsWith("/api/admin/")) {
     return NextResponse.next();
   }
 
-  // Make the admin subdomain's homepage display the existing admin page.
+  // The subdomain homepage displays the existing admin page.
   if (pathname === "/") {
     return NextResponse.rewrite(new URL("/admin", request.url));
   }
 
-  // Do not expose public pages through the admin hostname.
-  return new NextResponse("Not Found", {
-    status: 404,
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "no-store",
-      "X-Robots-Tag": "noindex, nofollow",
-    },
-  });
+  // All other paths show the branded 404 page.
+  return brandedNotFound(request);
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

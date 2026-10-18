@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { usePreferences } from "./PreferencesProvider";
 
-export default function MoneyvaHeader() {
+export default function MoneyvaHeader({
+  isAdminHost = false,
+}: {
+  isAdminHost?: boolean;
+}) {
   const {
     theme,
     language,
@@ -70,6 +74,8 @@ export default function MoneyvaHeader() {
 
         <nav className="hidden items-center gap-6 md:flex">
 
+          {!isAdminHost && (<>
+
           <Link
             href="/ctc-calculator"
             className={`
@@ -134,6 +140,9 @@ export default function MoneyvaHeader() {
           </Link>
 
 
+
+          </>)}
+
           {/* THEME BUTTON */}
 
           <button
@@ -190,7 +199,8 @@ export default function MoneyvaHeader() {
           </button>
 
 
-          {/* CALCULATOR CTA */}
+
+          {!isAdminHost && (<>          {/* CALCULATOR CTA */}
 
           <Link
             href="/ctc-calculator"
@@ -201,6 +211,8 @@ export default function MoneyvaHeader() {
               : "Calculate Salary"}
           </Link>
 
+
+          </>)}
         </nav>
 
 
@@ -210,6 +222,7 @@ export default function MoneyvaHeader() {
 
         <div className="flex items-center gap-2 md:hidden">
 
+{!isAdminHost && (
           <Link
             href="/ticket-status"
             className={`
@@ -223,6 +236,7 @@ export default function MoneyvaHeader() {
           >
             {isHindi ? "टिकट" : "Ticket Status"}
           </Link>
+          )}
 
           <button
             type="button"

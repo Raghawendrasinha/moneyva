@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePreferences } from "@/components/PreferencesProvider";
+import VisitorCounter from "@/components/VisitorCounter";
 
 export default function MoneyvaFooter() {
   const { language } = usePreferences();
@@ -93,6 +94,7 @@ export default function MoneyvaFooter() {
           © {new Date().getFullYear()} Moneyva. {text.rights}
         </div>
       </div>
-    </footer>
+            <VisitorCounter />
+      </footer>
   );
 }

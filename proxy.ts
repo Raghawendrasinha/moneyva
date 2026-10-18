@@ -3,6 +3,26 @@ import { NextRequest, NextResponse } from "next/server";
 export function proxy(request: NextRequest) {
   const hostname = request.nextUrl.hostname.toLowerCase();
 
+  // Hide the admin dashboard from the public hostnames.
+  if (
+    hostname === "moneyva.in" ||
+    hostname === "www.moneyva.in"
+  ) {
+    if (request.nextUrl.pathname === "/admin" ||
+        request.nextUrl.pathname.startsWith("/admin/")) {
+      return new NextResponse("Not Found", {
+        status: 404,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "no-store",
+          "X-Robots-Tag": "noindex, nofollow",
+        },
+      });
+    }
+
+    return NextResponse.next();
+  }
+
   // Apply admin-only routing exclusively to the admin subdomain.
   if (hostname !== "admin.moneyva.in") {
     return NextResponse.next();

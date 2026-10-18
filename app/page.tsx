@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePreferences } from "@/components/PreferencesProvider";
 import { translations } from "@/lib/i18n/translations";
@@ -8,6 +9,32 @@ export default function Home() {
   const { language } = usePreferences();
 
   const t = translations[language].home;
+
+  const [localHour, setLocalHour] = useState<number | null>(null);
+
+  useEffect(() => {
+    const updateLocalHour = () => setLocalHour(new Date().getHours());
+
+    updateLocalHour();
+    const intervalId = window.setInterval(updateLocalHour, 60_000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  const greeting =
+    localHour === null
+      ? ""
+      : language === "hi"
+        ? localHour < 5 || localHour >= 17
+          ? "शुभ संध्या!"
+          : localHour < 12
+            ? "सुप्रभात!"
+            : "नमस्कार!"
+        : localHour < 5 || localHour >= 17
+          ? "Good Evening!"
+          : localHour < 12
+            ? "Good Morning!"
+            : "Good Afternoon!";
 
   return (
     <main
@@ -98,6 +125,17 @@ export default function Home() {
           ================================================== */}
 
           <div>
+            {/* Time-based greeting */}
+
+            {greeting && (
+              <p
+                className="mb-4 text-lg font-bold tracking-tight text-emerald-700 dark:text-emerald-300 sm:text-xl"
+                aria-live="polite"
+              >
+                {greeting}
+              </p>
+            )}
+
             {/* Badge */}
 
             <div

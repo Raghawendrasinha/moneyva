@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { usePreferences } from "@/components/PreferencesProvider";
 
 type Ticket = {
   id: string;
@@ -15,6 +16,22 @@ type Ticket = {
   resolution_email_status: string | null;
   resolution_email_sent_at: string | null;
 };
+
+function t(en: string, hi: string, isHindi: boolean) {
+  return isHindi ? hi : en;
+}
+
+function statusLabel(status: string, isHindi: boolean) {
+  const labels: Record<string, string> = {
+    "Open": "खुला",
+    "In Progress": "प्रगति में",
+    "Awaiting Your Reply": "आपके जवाब की प्रतीक्षा",
+    "Resolved": "समाधान किया गया",
+    "Closed": "बंद",
+    "All": "सभी",
+  };
+  return isHindi ? (labels[status] ?? status) : status;
+}
 
 const STATUSES = [
   "Open",
@@ -32,6 +49,8 @@ function formatDate(value: string | null) {
 }
 
 export default function AdminPage() {
+  const { language } = usePreferences();
+  const isHindi = language === "hi";
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -256,7 +275,7 @@ export default function AdminPage() {
               MONEYVA SUPPORT
             </p>
             <h1 className="mt-2 text-3xl font-extrabold">
-              {loggedIn ? "Ticket Dashboard" : "Admin Login"}
+              {loggedIn ? t("Ticket Dashboard", "टिकट डैशबोर्ड", isHindi) : t("Admin Login", "एडमिन लॉगिन", isHindi)}
             </h1>
           </div>
 
@@ -267,7 +286,7 @@ export default function AdminPage() {
               disabled={busy}
               className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-100 disabled:opacity-60 dark:border-white/15 dark:hover:bg-white/10"
             >
-              Log out
+              {t("Log out", "लॉग आउट", isHindi)}
             </button>
           )}
         </div>
@@ -292,7 +311,7 @@ export default function AdminPage() {
 
         {loading ? (
           <p className="mt-8 text-slate-600 dark:text-slate-300">
-            Checking your session…
+            {t("Checking your session…", "आपका सेशन जाँचा जा रहा है…", isHindi)}
           </p>
         ) : !loggedIn ? (
           <form
@@ -301,7 +320,7 @@ export default function AdminPage() {
           >
             <div>
               <label htmlFor="admin-username" className="text-sm font-semibold">
-                Username
+                {t("Username", "यूज़रनेम", isHindi)}
               </label>
               <input
                 id="admin-username"
@@ -316,7 +335,7 @@ export default function AdminPage() {
 
             <div>
               <label htmlFor="admin-password" className="text-sm font-semibold">
-                Password
+                {t("Password", "पासवर्ड", isHindi)}
               </label>
               <div className="relative">
               <input
@@ -333,7 +352,7 @@ export default function AdminPage() {
                 type="button"
                 onClick={() => setShowPassword((visible) => !visible)}
                 className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-800"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? t("Hide password", "पासवर्ड छिपाएँ", isHindi) : t("Show password", "पासवर्ड दिखाएँ", isHindi)}
                 aria-pressed={showPassword}
               >
                 {showPassword ? (
@@ -358,14 +377,14 @@ export default function AdminPage() {
               disabled={busy}
               className="w-full rounded-xl bg-emerald-400 px-5 py-3 font-bold text-[#07111F] hover:bg-emerald-300 disabled:opacity-60"
             >
-              {busy ? "Signing in…" : "Sign in"}
+              {busy ? t("Signing in…", "लॉगिन हो रहा है…", isHindi) : t("Sign in", "लॉगिन करें", isHindi)}
             </button>
           </form>
         ) : (
           <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.5fr)]">
             <aside className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
               <div className="flex items-center justify-between gap-3">
-                <h2 className="font-bold">Tickets ({tickets.length})</h2>
+                <h2 className="font-bold">{t("Tickets", "टिकट", isHindi)} ({tickets.length})</h2>
                 <button
                   type="button"
                   disabled={busy}
@@ -383,12 +402,12 @@ export default function AdminPage() {
                   }}
                   className="text-sm font-semibold text-emerald-700 hover:underline dark:text-emerald-300"
                 >
-                  Refresh
+                  {t("Refresh", "रिफ्रेश करें", isHindi)}
                 </button>
               </div>
 
               <label htmlFor="ticket-filter" className="mt-4 block text-sm">
-                Filter by status
+                {t("Filter by status", "स्टेटस के अनुसार फ़िल्टर", isHindi)}
               </label>
               <select
                 id="ticket-filter"
@@ -396,9 +415,9 @@ export default function AdminPage() {
                 value={filter}
                 onChange={(event) => setFilter(event.target.value)}
               >
-                <option>All</option>
+                <option value="All">{statusLabel("All", isHindi)}</option>
                 {STATUSES.map((item) => (
-                  <option key={item}>{item}</option>
+                  <option key={item} value={item}>{statusLabel(item, isHindi)}</option>
                 ))}
               </select>
 
@@ -425,14 +444,14 @@ export default function AdminPage() {
                       {ticket.name}
                     </span>
                     <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">
-                      {ticket.status} · {formatDate(ticket.created_at)}
+                      {statusLabel(ticket.status, isHindi)} · {formatDate(ticket.created_at)}
                     </span>
                   </button>
                 ))}
 
                 {visibleTickets.length === 0 && (
                   <p className="py-6 text-sm text-slate-500 dark:text-slate-400">
-                    No tickets found for this filter.
+                    {t("No tickets found for this filter.", "इस फ़िल्टर के लिए कोई टिकट नहीं मिला।", isHindi)}
                   </p>
                 )}
               </div>
@@ -442,7 +461,7 @@ export default function AdminPage() {
               {selectedTicket ? (
                 <>
                   <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                    Ticket
+                    {t("Ticket", "टिकट", isHindi)}
                   </p>
                   <h2 className="mt-1 break-all text-2xl font-extrabold">
                     {selectedTicket.ticket_number}
@@ -451,7 +470,7 @@ export default function AdminPage() {
                   <div className="mt-5 grid gap-3 sm:grid-cols-2">
                     <div>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Customer
+                        {t("Customer", "ग्राहक", isHindi)}
                       </p>
                       <p className="mt-1 break-words font-semibold">
                         {selectedTicket.name}
@@ -459,7 +478,7 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Email
+                        {t("Email", "ईमेल", isHindi)}
                       </p>
                       <p className="mt-1 break-all font-semibold">
                         {selectedTicket.email}
@@ -467,7 +486,7 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Created
+                        {t("Created", "बनाया गया", isHindi)}
                       </p>
                       <p className="mt-1 text-sm">
                         {formatDate(selectedTicket.created_at)}
@@ -475,7 +494,7 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Last status update
+                        {t("Last status update", "स्टेटस में आख़िरी बदलाव", isHindi)}
                       </p>
                       <p className="mt-1 text-sm">
                         {formatDate(selectedTicket.status_updated_at)}
@@ -484,7 +503,7 @@ export default function AdminPage() {
                   </div>
 
                   <div className="mt-6">
-                    <h3 className="font-bold">Original complaint / query</h3>
+                    <h3 className="font-bold">{t("Original complaint / query", "मूल शिकायत / सवाल", isHindi)}</h3>
                     <p className="mt-2 whitespace-pre-wrap break-words rounded-xl bg-slate-50 p-4 text-sm leading-6 dark:bg-white/5">
                       {selectedTicket.message}
                     </p>
@@ -492,7 +511,7 @@ export default function AdminPage() {
 
                   <div className="mt-6">
                     <label htmlFor="ticket-status" className="font-bold">
-                      Ticket status
+                      {t("Ticket status", "टिकट का स्टेटस", isHindi)}
                     </label>
                     <select
                       id="ticket-status"
@@ -501,14 +520,14 @@ export default function AdminPage() {
                       onChange={(event) => setStatus(event.target.value)}
                     >
                       {STATUSES.map((item) => (
-                        <option key={item}>{item}</option>
+                        <option key={item} value={item}>{statusLabel(item, isHindi)}</option>
                       ))}
                     </select>
                   </div>
 
                   <div className="mt-6">
                     <label htmlFor="ticket-resolution" className="font-bold">
-                      Resolution / reply to customer
+                      {t("Resolution / reply to customer", "समाधान / ग्राहक को जवाब", isHindi)}
                     </label>
                     <textarea
                       id="ticket-resolution"
@@ -517,21 +536,20 @@ export default function AdminPage() {
                       onChange={(event) => setResolution(event.target.value)}
                       maxLength={10000}
                       rows={8}
-                      placeholder="Explain the solution or provide an update for the customer…"
+                      placeholder={t("Explain the solution or provide an update for the customer…", "समाधान समझाएँ या ग्राहक के लिए अपडेट लिखें…", isHindi)}
                     />
                     <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                      This text will appear on the secure tracking page once we
-                      update it, and in the resolution email when you send one.
+                      {t("This text will appear on the secure tracking page once we update it, and in the resolution email when you send one.", "यह टेक्स्ट टिकट अपडेट करने के बाद सुरक्षित ट्रैकिंग पेज पर और समाधान ईमेल में दिखाई देगा।", isHindi)}
                     </p>
                   </div>
 
                   <div className="mt-5 rounded-xl bg-slate-50 p-4 text-sm dark:bg-white/5">
                     <p>
-                      <strong>Last resolution email:</strong>{" "}
+                      <strong>{t("Last resolution email:", "आख़िरी समाधान ईमेल:", isHindi)}</strong>{" "}
                       {selectedTicket.resolution_email_status ?? "pending"}
                     </p>
                     <p className="mt-1">
-                      <strong>Sent at:</strong>{" "}
+                      <strong>{t("Sent at:", "भेजने का समय:", isHindi)}</strong>{" "}
                       {formatDate(selectedTicket.resolution_email_sent_at)}
                     </p>
                   </div>
@@ -543,7 +561,7 @@ export default function AdminPage() {
                       onClick={() => void handleSave(false)}
                       className="flex-1 rounded-xl border border-slate-300 px-4 py-3 font-bold hover:bg-slate-50 disabled:opacity-60 dark:border-white/15 dark:hover:bg-white/5"
                     >
-                      {busy ? "Saving…" : "Save Changes"}
+                      {busy ? t("Saving…", "सेव हो रहा है…", isHindi) : t("Save Changes", "बदलाव सेव करें", isHindi)}
                     </button>
                     <button
                       type="button"
@@ -559,15 +577,15 @@ export default function AdminPage() {
                       }}
                       className="flex-1 rounded-xl bg-emerald-400 px-4 py-3 font-bold text-[#07111F] hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      {busy ? "Please wait…" : "Save & Send Resolution Email"}
+                      {busy ? t("Please wait…", "कृपया प्रतीक्षा करें…", isHindi) : t("Save & Send Resolution Email", "सेव करें और समाधान ईमेल भेजें", isHindi)}
                     </button>
                   </div>
                 </>
               ) : (
                 <p className="py-10 text-slate-500 dark:text-slate-400">
                   {tickets.length
-                    ? "Select a ticket to view and manage it."
-                    : "No tickets have been registered yet."}
+                    ? t("Select a ticket to view and manage it.", "विवरण देखने और प्रबंधित करने के लिए टिकट चुनें।", isHindi)
+                    : t("No tickets have been registered yet.", "अभी तक कोई टिकट दर्ज नहीं किया गया है।", isHindi)}
                 </p>
               )}
             </section>

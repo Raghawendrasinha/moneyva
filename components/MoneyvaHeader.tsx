@@ -35,7 +35,7 @@ export default function MoneyvaHeader({
         ================================= */}
 
         <Link
-          href="/"
+          href={isAdminHost ? "/admin" : "/"}
           className="flex items-center gap-3"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400 text-[#07111F] shadow-lg shadow-emerald-500/20">

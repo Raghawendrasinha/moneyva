@@ -26,6 +26,9 @@ const content = {
     investedDescription: "Your contributions over the investment period",
     gainsDescription: "Potential growth based on your assumed return",
     futureDescription: "Contributions plus estimated returns",
+    exampleTitle: "SIP investment example",
+    exampleDescription:
+      "For example, investing ₹5,000 per month for 10 years at an assumed 12% annual return, with no annual step-up, could grow to approximately ₹11.5 lakh. You would contribute ₹6 lakh, while the estimated returns would be around ₹5.5 lakh.",
     guideTitle: "How does a SIP calculator work?",
     guide:
       "A Systematic Investment Plan (SIP) lets you invest a fixed amount regularly. This calculator estimates the future value using an effective monthly return derived from your assumed annual return. Actual market returns vary and are not guaranteed.",
@@ -64,6 +67,9 @@ const content = {
     investedDescription: "पूरी अवधि में आपके द्वारा जमा की गई राशि",
     gainsDescription: "अनुमानित रिटर्न के आधार पर संभावित वृद्धि",
     futureDescription: "कुल निवेश और अनुमानित रिटर्न",
+    exampleTitle: "SIP निवेश का उदाहरण",
+    exampleDescription:
+      "उदाहरण के लिए, यदि आप बिना वार्षिक स्टेप-अप के 10 वर्षों तक हर महीने ₹5,000 निवेश करते हैं और अनुमानित वार्षिक रिटर्न 12% रहता है, तो भविष्य की राशि लगभग ₹11.5 लाख हो सकती है। आपका कुल निवेश ₹6 लाख होगा और अनुमानित रिटर्न लगभग ₹5.5 लाख होगा।",
     guideTitle: "SIP कैलकुलेटर कैसे काम करता है?",
     guide:
       "सिस्टमैटिक इन्वेस्टमेंट प्लान (SIP) में आप नियमित रूप से एक निश्चित राशि निवेश करते हैं। यह कैलकुलेटर अनुमानित वार्षिक रिटर्न से मासिक रिटर्न निकालकर भविष्य की राशि का अनुमान लगाता है। वास्तविक बाजार रिटर्न अलग हो सकता है और इसकी गारंटी नहीं है।",
@@ -320,6 +326,12 @@ export default function SipCalculatorPage() {
         </div>
 
         <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-[#102131]">
+          <div className="mb-8 rounded-xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/20 dark:bg-blue-500/10">
+            <h2 className="text-xl font-bold">{t.exampleTitle}</h2>
+            <p className="mt-3 leading-7 text-slate-700 dark:text-slate-300">
+              {t.exampleDescription}
+            </p>
+          </div>
           <h2 className="text-2xl font-bold">{t.guideTitle}</h2>
           <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">
             {t.guide}

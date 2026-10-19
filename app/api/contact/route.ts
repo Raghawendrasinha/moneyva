@@ -132,6 +132,34 @@ export async function POST(request: Request) {
       );
     }
 
+    // Require a valid, one-time email verification token before creating a ticket.
+    const verificationToken =
+      typeof data.verificationToken === "string" ? data.verificationToken : "";
+
+    if (!verificationToken || verificationToken.length > 200) {
+      return NextResponse.json(
+        { error: "Please verify your email address before submitting." },
+        { status: 403 }
+      );
+    }
+
+    const verificationKey =
+      `moneyva:contact:verified:${hashToken(verificationToken)}`;
+
+    // Consume the token atomically only when it matches the submitted email.
+    const verifiedEmail = await redis.eval<string[]>(
+      "local value = redis.call('GET', KEYS[1]); if value == ARGV[1] then redis.call('DEL', KEYS[1]); return {value} end; return {}",
+      [verificationKey],
+      [email]
+    );
+
+    if (!Array.isArray(verifiedEmail) || verifiedEmail[0] !== email) {
+      return NextResponse.json(
+        { error: "Email verification is missing or expired. Please verify your email again." },
+        { status: 403 }
+      );
+    }
+
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseSecret = process.env.SUPABASE_SECRET_KEY;
     const resendKey = process.env.RESEND_API_KEY;

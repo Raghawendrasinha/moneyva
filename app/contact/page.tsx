@@ -12,6 +12,14 @@ export default function ContactPage() {
   const [message, setMessage] = useState("");
   const [website, setWebsite] = useState("");
   const [busy, setBusy] = useState(false);
+  const [otpBusy, setOtpBusy] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [verificationToken, setVerificationToken] = useState("");
+  const [otpStatus, setOtpStatus] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const [ticketNumber, setTicketNumber] = useState<string | null>(null);
   const [acknowledgementEmailSent, setAcknowledgementEmailSent] = useState(true);
   const [status, setStatus] = useState<{
@@ -19,8 +27,130 @@ export default function ContactPage() {
     text: string;
   } | null>(null);
 
+  function changeEmail(value: string) {
+    setEmail(value);
+    setOtpSent(false);
+    setOtp("");
+    setVerificationToken("");
+    setOtpStatus(null);
+  }
+
+  async function requestOtp() {
+    setOtpBusy(true);
+    setOtpStatus(null);
+
+    try {
+      const response = await fetch("/api/contact-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "send",
+          email: email.trim().toLowerCase(),
+        }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error ||
+            (hi ? "OTP भेजा नहीं जा सका।" : "Could not send the verification code."),
+        );
+      }
+
+      setOtpSent(true);
+      setOtp("");
+      setVerificationToken("");
+      setOtpStatus({
+        type: "success",
+        text: hi
+          ? "OTP आपके ईमेल पर भेज दिया गया है। यह 10 मिनट में समाप्त हो जाएगा।"
+          : "A verification code was sent to your email. It expires in 10 minutes.",
+      });
+    } catch (error) {
+      setOtpStatus({
+        type: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : hi
+              ? "कुछ गलत हुआ। दोबारा प्रयास करें।"
+              : "Something went wrong. Please try again.",
+      });
+    } finally {
+      setOtpBusy(false);
+    }
+  }
+
+  async function verifyOtp() {
+    setOtpBusy(true);
+    setOtpStatus(null);
+
+    try {
+      const response = await fetch("/api/contact-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "verify",
+          email: email.trim().toLowerCase(),
+          code: otp.trim(),
+        }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error ||
+            (hi ? "OTP सही नहीं है।" : "The verification code is incorrect."),
+        );
+      }
+
+      if (
+        typeof result.verificationToken !== "string" ||
+        !result.verificationToken
+      ) {
+        throw new Error(
+          hi
+            ? "सत्यापन टोकन नहीं मिला। कृपया दोबारा प्रयास करें।"
+            : "Verification token was not returned. Please try again.",
+        );
+      }
+
+      setVerificationToken(result.verificationToken);
+      setOtpStatus({
+        type: "success",
+        text: hi
+          ? "ईमेल सफलतापूर्वक सत्यापित हो गया।"
+          : "Email verified successfully.",
+      });
+    } catch (error) {
+      setVerificationToken("");
+      setOtpStatus({
+        type: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : hi
+              ? "OTP सत्यापित नहीं हो सका।"
+              : "Could not verify the code.",
+      });
+    } finally {
+      setOtpBusy(false);
+    }
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!verificationToken) {
+      setStatus({
+        type: "error",
+        text: hi
+          ? "संदेश भेजने से पहले अपना ईमेल सत्यापित करें।"
+          : "Please verify your email before submitting the message.",
+      });
+      return;
+    }
+
     setBusy(true);
     setStatus(null);
     setTicketNumber(null);
@@ -29,7 +159,13 @@ export default function ContactPage() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message, website }),
+        body: JSON.stringify({
+          name,
+          email: email.trim().toLowerCase(),
+          message,
+          website,
+          verificationToken,
+        }),
       });
 
       const result = await response.json();
@@ -39,7 +175,7 @@ export default function ContactPage() {
           result.error ||
             (hi
               ? "संदेश भेजा नहीं जा सका। दोबारा प्रयास करें।"
-              : "Unable to send your message.")
+              : "Unable to send your message."),
         );
       }
 
@@ -47,7 +183,7 @@ export default function ContactPage() {
         throw new Error(
           hi
             ? "जवाब प्राप्त हुआ, लेकिन टिकट नंबर नहीं मिला। कृपया हमसे संपर्क करें।"
-            : "We received a response but could not retrieve your ticket number. Please contact us."
+            : "We received a response but could not retrieve your ticket number. Please contact us.",
         );
       }
 
@@ -61,7 +197,7 @@ export default function ContactPage() {
       });
 
       setName("");
-      setEmail("");
+      changeEmail("");
       setMessage("");
       setWebsite("");
     } catch (error) {
@@ -116,17 +252,14 @@ export default function ContactPage() {
             <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">
               {hi ? "आपका टिकट नंबर" : "Your Ticket Number"}
             </p>
-
             <p className="mt-2 break-all text-2xl font-extrabold tracking-wide text-slate-900 dark:text-white">
               {ticketNumber}
             </p>
-
             <p className="mt-3 text-sm leading-6 text-slate-700 dark:text-slate-200">
               {hi
                 ? "कृपया इस नंबर को भविष्य के संदर्भ के लिए सुरक्षित रखें।"
                 : "Please save this number for future reference."}
             </p>
-
             {!acknowledgementEmailSent && (
               <p className="mt-3 text-sm leading-6 text-amber-800 dark:text-amber-200">
                 {hi
@@ -170,10 +303,95 @@ export default function ContactPage() {
               className={inputClass}
               placeholder="you@example.com"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => changeEmail(event.target.value)}
               maxLength={254}
               required
             />
+
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={requestOtp}
+                disabled={
+                  otpBusy ||
+                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ||
+                  Boolean(verificationToken)
+                }
+                className="rounded-xl border border-emerald-600 px-4 py-2 text-sm font-bold text-emerald-800 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-emerald-400 dark:text-emerald-200 dark:hover:bg-emerald-500/10"
+              >
+                {otpBusy
+                  ? hi
+                    ? "कृपया प्रतीक्षा करें..."
+                    : "Please wait..."
+                  : verificationToken
+                    ? hi
+                      ? "ईमेल सत्यापित ✓"
+                      : "Email verified ✓"
+                    : otpSent
+                      ? hi
+                        ? "OTP दोबारा भेजें"
+                        : "Resend OTP"
+                      : hi
+                        ? "OTP भेजें"
+                        : "Send OTP"}
+              </button>
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                {hi
+                  ? "ईमेल सत्यापन आवश्यक है।"
+                  : "Email verification is required."}
+              </span>
+            </div>
+
+            {otpSent && !verificationToken && (
+              <div className="mt-4">
+                <label htmlFor="contact-otp" className="text-sm font-semibold">
+                  {hi ? "6 अंकों का OTP" : "6-digit verification code"}
+                </label>
+                <input
+                  id="contact-otp"
+                  name="otp"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  pattern="[0-9]{6}"
+                  maxLength={6}
+                  className={inputClass}
+                  placeholder={hi ? "6 अंकों का OTP दर्ज करें" : "Enter your 6-digit code"}
+                  value={otp}
+                  onChange={(event) =>
+                    setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={verifyOtp}
+                  disabled={otpBusy || otp.length !== 6}
+                  className="mt-3 w-full rounded-xl bg-slate-900 px-5 py-3 font-bold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+                >
+                  {otpBusy
+                    ? hi
+                      ? "सत्यापित हो रहा है..."
+                      : "Verifying..."
+                    : hi
+                      ? "OTP सत्यापित करें"
+                      : "Verify OTP"}
+                </button>
+              </div>
+            )}
+
+            {otpStatus && (
+              <p
+                role="status"
+                aria-live="polite"
+                className={`mt-3 rounded-xl p-3 text-sm leading-6 ${
+                  otpStatus.type === "success"
+                    ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-200"
+                    : "bg-red-50 text-red-800 dark:bg-red-500/10 dark:text-red-200"
+                }`}
+              >
+                {otpStatus.text}
+              </p>
+            )}
           </div>
 
           <div>
@@ -197,9 +415,7 @@ export default function ContactPage() {
               required
             />
             <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              {hi
-                ? "कम से कम 10 अक्षर लिखें।"
-                : "Please enter at least 10 characters."}
+              {hi ? "कम से कम 10 अक्षर लिखें।" : "Please enter at least 10 characters."}
             </p>
           </div>
 
@@ -234,7 +450,7 @@ export default function ContactPage() {
 
           <button
             type="submit"
-            disabled={busy}
+            disabled={busy || !verificationToken}
             className="w-full rounded-xl bg-emerald-400 px-5 py-3 font-bold text-[#07111F] transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {busy
@@ -242,8 +458,8 @@ export default function ContactPage() {
                 ? "भेजा जा रहा है..."
                 : "Sending..."
               : hi
-                ? "संदेश भेजें"
-                : "Send Message"}
+                ? "सत्यापित ईमेल से संदेश भेजें"
+                : "Submit Verified Message"}
           </button>
 
           <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">

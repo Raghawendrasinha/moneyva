@@ -1695,6 +1695,29 @@ export default function CTCCalculator() {
                     : "Open Salary Hike Calculator →"}
                 </Link>
               </div>
+
+              <div className="mt-4 rounded-xl border border-slate-200 p-5 dark:border-white/10">
+                <h3 className="font-bold text-slate-900 dark:text-white">
+                  {language === "hi"
+                    ? "अपने निवेश का अनुमान भी लगाएं"
+                    : "Estimate Your Investment Growth Too"}
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  {language === "hi"
+                    ? "मासिक SIP निवेश, अनुमानित रिटर्न और निवेश की अवधि के आधार पर संभावित भविष्य की राशि जानने के लिए Moneyva SIP Calculator का उपयोग करें।"
+                    : "Use the Moneyva SIP Calculator to estimate the potential future value of monthly investments based on your contribution, assumed return and investment duration."}
+                </p>
+
+                <Link
+                  href="/sip-calculator"
+                  className="mt-4 inline-flex font-semibold text-blue-600 hover:underline dark:text-blue-400"
+                >
+                  {language === "hi"
+                    ? "SIP Calculator देखें →"
+                    : "Open SIP Calculator →"}
+                </Link>
+              </div>
             </div>
           </section>
         </div>

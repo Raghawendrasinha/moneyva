@@ -35,6 +35,10 @@ const content = {
     disclaimerTitle: "Important disclaimer",
     disclaimer:
       "This result is an illustration, not a guarantee or investment recommendation. Mutual fund investments are subject to market risks. Please read all scheme-related documents carefully.",
+    relatedTitle: "Explore More Calculators",
+    relatedDescription: "Use these free tools to plan your salary and finances.",
+    ctcCalculator: "CTC to In-Hand Salary Calculator",
+    salaryHikeCalculator: "Salary Hike Calculator",
     home: "Home",
     invalidInvestment: "Enter a monthly investment above ₹0.",
     invalidReturn: "Enter an annual return between 0% and 20%.",
@@ -69,6 +73,10 @@ const content = {
     disclaimerTitle: "महत्वपूर्ण डिस्क्लेमर",
     disclaimer:
       "यह केवल अनुमान है, रिटर्न की गारंटी या निवेश की सलाह नहीं। म्यूचुअल फंड निवेश बाजार जोखिमों के अधीन हैं। निवेश करने से पहले योजना से जुड़े सभी दस्तावेज ध्यान से पढ़ें।",
+    relatedTitle: "अन्य कैलकुलेटर देखें",
+    relatedDescription: "अपनी सैलरी और वित्तीय योजना के लिए इन मुफ्त टूल्स का उपयोग करें।",
+    ctcCalculator: "CTC से इन-हैंड सैलरी कैलकुलेटर",
+    salaryHikeCalculator: "सैलरी हाइक कैलकुलेटर",
     home: "होम",
     invalidInvestment: "₹0 से अधिक मासिक निवेश दर्ज करें।",
     invalidReturn: "0% से 20% के बीच वार्षिक रिटर्न दर्ज करें।",
@@ -325,6 +333,27 @@ export default function SipCalculatorPage() {
             <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">
               {t.disclaimer}
             </p>
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-[#102131]">
+          <h2 className="text-2xl font-bold">{t.relatedTitle}</h2>
+          <p className="mt-3 leading-7 text-slate-600 dark:text-slate-300">
+            {t.relatedDescription}
+          </p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <Link
+              href="/ctc-calculator"
+              className="rounded-xl border border-slate-200 p-4 font-semibold text-blue-700 transition hover:border-blue-400 hover:bg-blue-50 dark:border-white/10 dark:text-blue-300 dark:hover:bg-white/5"
+            >
+              {t.ctcCalculator} →
+            </Link>
+            <Link
+              href="/salary-hike-calculator"
+              className="rounded-xl border border-slate-200 p-4 font-semibold text-blue-700 transition hover:border-blue-400 hover:bg-blue-50 dark:border-white/10 dark:text-blue-300 dark:hover:bg-white/5"
+            >
+              {t.salaryHikeCalculator} →
+            </Link>
           </div>
         </section>
       </section>

@@ -64,7 +64,7 @@ const websiteJsonLd = {
   name: "Moneyva",
   url: "https://www.moneyva.in/",
   description:
-    "Free salary and financial calculators for India, including CTC, in-hand salary and salary hike calculators.",
+    "Free salary and financial calculators for India, including CTC, in-hand salary, salary hike and SIP calculators.",
   inLanguage: "en-IN",
 };
 

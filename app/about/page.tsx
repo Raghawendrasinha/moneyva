@@ -144,7 +144,7 @@ export default function AboutPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="/ctc-calculator"
+              href="/#calculators"
               className="inline-flex items-center justify-center rounded-xl bg-emerald-400 px-5 py-3 font-bold text-[#07111F] transition hover:bg-emerald-300"
             >
               {t.explore}

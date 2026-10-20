@@ -508,6 +508,22 @@ export default function SalaryHikeCalculator() {
               Calculate In-Hand Salary →
             </Link>
           </div>
+
+          <div className="mt-4 rounded-2xl border border-slate-200 p-6 dark:border-white/10">
+            <h3 className="text-lg font-bold">
+              Plan how to invest your salary increase
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+              Estimate the potential future value of monthly SIP investments
+              using your contribution, assumed return and investment duration.
+            </p>
+            <Link
+              href="/sip-calculator"
+              className="mt-4 inline-block text-sm font-bold text-emerald-700 transition hover:text-emerald-600 dark:text-emerald-300"
+            >
+              Explore SIP Calculator →
+            </Link>
+          </div>
         </section>
         )}
 
@@ -677,6 +693,22 @@ export default function SalaryHikeCalculator() {
                 className="mt-4 inline-block text-sm font-bold text-emerald-700 transition hover:text-emerald-600 dark:text-emerald-300"
               >
                 इन-हैंड सैलरी कैलकुलेट करें →
+              </Link>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-slate-200 p-6 dark:border-white/10">
+              <h3 className="text-lg font-bold">
+                अपनी सैलरी बढ़ोतरी को निवेश में लगाने की योजना बनाएं
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                मासिक SIP निवेश, अनुमानित रिटर्न और निवेश की अवधि के आधार पर
+                संभावित भविष्य की राशि का अनुमान लगाएं।
+              </p>
+              <Link
+                href="/sip-calculator"
+                className="mt-4 inline-block text-sm font-bold text-emerald-700 transition hover:text-emerald-600 dark:text-emerald-300"
+              >
+                SIP Calculator देखें →
               </Link>
             </div>
           </section>

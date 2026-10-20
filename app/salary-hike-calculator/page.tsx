@@ -524,6 +524,36 @@ export default function SalaryHikeCalculator() {
               Explore SIP Calculator →
             </Link>
           </div>
+
+          <div className="mt-10 border-t border-slate-200 pt-8 dark:border-white/10">
+            <h2 className="text-2xl font-bold">Frequently Asked Questions</h2>
+            <div className="mt-6 space-y-6">
+              <div>
+                <h3 className="font-bold">How is salary hike percentage calculated?</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  Divide the increase in annual CTC by your current annual CTC, then multiply by 100. For example, an increase from ₹10 lakh to ₹12 lakh is a 20% hike.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-bold">How do I calculate my new CTC after a hike?</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  Multiply your current CTC by the hike percentage divided by 100 to get the increase, then add it to your current CTC.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-bold">How much is a 10% or 20% salary hike?</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  On a current CTC of ₹10 lakh, a 10% hike adds ₹1 lakh, making the new CTC ₹11 lakh. A 20% hike adds ₹2 lakh, making it ₹12 lakh.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-bold">Will my monthly take-home salary increase by the same percentage?</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  Not necessarily. CTC may include employer contributions and variable pay, while taxes and other deductions affect take-home pay. Use the CTC to In-Hand Salary Calculator for an estimate.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
         )}
 
@@ -710,6 +740,36 @@ export default function SalaryHikeCalculator() {
               >
                 SIP Calculator देखें →
               </Link>
+            </div>
+
+            <div className="mt-10 border-t border-slate-200 pt-8 dark:border-white/10">
+              <h2 className="text-2xl font-bold">अक्सर पूछे जाने वाले सवाल</h2>
+              <div className="mt-6 space-y-6">
+                <div>
+                  <h3 className="font-bold">सैलरी हाइक प्रतिशत कैसे कैलकुलेट करें?</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    नई CTC में से वर्तमान CTC घटाएं, फिर इस अंतर को वर्तमान CTC से भाग देकर 100 से गुणा करें। उदाहरण के लिए, ₹10 लाख से ₹12 लाख होने पर हाइक 20% है।
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-bold">हाइक के बाद नई CTC कैसे निकालें?</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    वर्तमान CTC को हाइक प्रतिशत से गुणा करके 100 से भाग दें। इससे वार्षिक बढ़ोतरी मिलेगी। इसे वर्तमान CTC में जोड़ने पर नई CTC मिलेगी।
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-bold">10% या 20% सैलरी हाइक कितनी होती है?</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    ₹10 लाख की वर्तमान CTC पर 10% हाइक से ₹1 लाख की बढ़ोतरी और ₹11 लाख की नई CTC होगी। 20% हाइक से ₹2 लाख की बढ़ोतरी और ₹12 लाख की नई CTC होगी।
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-bold">क्या मासिक इन-हैंड सैलरी भी उतने ही प्रतिशत बढ़ेगी?</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                    जरूरी नहीं। CTC में कंपनी का योगदान और वैरिएबल पे शामिल हो सकते हैं, जबकि टैक्स और अन्य कटौतियां इन-हैंड सैलरी को प्रभावित करती हैं। अनुमान के लिए CTC से इन-हैंड सैलरी कैलकुलेटर का उपयोग करें।
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
         )}

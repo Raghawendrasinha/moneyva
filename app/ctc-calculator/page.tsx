@@ -1718,6 +1718,75 @@ export default function CTCCalculator() {
                     : "Open SIP Calculator →"}
                 </Link>
               </div>
+
+              {/* CTC CALCULATOR FAQ */}
+              <section className="mt-10" aria-labelledby="ctc-faq-heading">
+                <h3
+                  id="ctc-faq-heading"
+                  className="text-2xl font-bold text-slate-900 dark:text-white"
+                >
+                  {language === "hi"
+                    ? "CTC और इन-हैंड सैलरी: अक्सर पूछे जाने वाले सवाल"
+                    : "CTC to In-Hand Salary: Frequently Asked Questions"}
+                </h3>
+
+                <div className="mt-5 space-y-5">
+                  {[
+                    {
+                      question:
+                        language === "hi"
+                          ? "CTC से इन-हैंड सैलरी कैसे निकालें?"
+                          : "How do I calculate in-hand salary from CTC?",
+                      answer:
+                        language === "hi"
+                          ? "अपनी CTC के घटकों को देखें। कर्मचारी PF, लागू इनकम टैक्स और अन्य कटौतियों को ध्यान में रखें। Employer PF, gratuity और variable pay जैसे घटक भी CTC और नियमित मासिक भुगतान के बीच अंतर पैदा कर सकते हैं। अनुमान के लिए ऊपर दिए गए कैलकुलेटर में अपनी सैलरी की जानकारी दर्ज करें।"
+                          : "Review your salary components and account for employee PF, applicable income tax and other deductions. Employer PF, gratuity and variable pay can also make CTC differ from regular monthly pay. Enter your salary details in the calculator above for an estimate.",
+                    },
+                    {
+                      question:
+                        language === "hi"
+                          ? "इन-हैंड सैलरी CTC से कम क्यों होती है?"
+                          : "Why is in-hand salary lower than CTC?",
+                      answer:
+                        language === "hi"
+                          ? "CTC में Employer PF, gratuity या variable pay जैसे घटक शामिल हो सकते हैं, जो हर महीने सीधे बैंक खाते में नहीं मिलते। कर्मचारी PF, टैक्स और अन्य लागू कटौतियाँ भी इन-हैंड सैलरी को कम कर सकती हैं।"
+                          : "CTC may include employer PF, gratuity or variable pay that is not paid directly into your bank account every month. Employee PF, tax and other applicable deductions can also reduce take-home pay.",
+                    },
+                    {
+                      question:
+                        language === "hi"
+                          ? "क्या CTC में Employer PF और gratuity शामिल होते हैं?"
+                          : "Does CTC include employer PF and gratuity?",
+                      answer:
+                        language === "hi"
+                          ? "कई salary structures में employer PF contribution और gratuity को CTC में शामिल किया जाता है, लेकिन यह आपके employer की salary policy पर निर्भर करता है। अपने salary breakup में इन घटकों की जाँच करें।"
+                          : "Many salary structures include employer PF contributions and gratuity in CTC, but this depends on your employer's salary policy. Check your salary breakup to confirm which components are included.",
+                    },
+                    {
+                      question:
+                        language === "hi"
+                          ? "क्या कैलकुलेटर का परिणाम मेरी सटीक इन-हैंड सैलरी होगा?"
+                          : "Will the calculator show my exact in-hand salary?",
+                      answer:
+                        language === "hi"
+                          ? "नहीं। यह अनुमान देता है। वास्तविक सैलरी आपके salary structure, PF rules, tax regime, लागू deductions और employer की payroll policy के अनुसार अलग हो सकती है।"
+                          : "No. It provides an estimate. Your actual salary may differ based on your salary structure, PF rules, tax regime, applicable deductions and your employer's payroll policy.",
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.question}
+                      className="rounded-xl border border-slate-200 p-5 dark:border-white/10"
+                    >
+                      <h4 className="font-semibold text-slate-900 dark:text-white">
+                        {item.question}
+                      </h4>
+                      <p className="mt-2 leading-7 text-slate-600 dark:text-slate-300">
+                        {item.answer}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
             </div>
           </section>
         </div>

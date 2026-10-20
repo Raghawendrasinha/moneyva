@@ -712,7 +712,11 @@ export default function Home() {
         >
           <ToolCard
             icon="₹"
-            title={t.ctcToInHand}
+            title={
+              language === "hi"
+                ? "CTC से इन-हैंड सैलरी कैलकुलेटर"
+                : "CTC to In-Hand Salary Calculator"
+            }
             description={t.heroDescription}
             href="/ctc-calculator"
             available

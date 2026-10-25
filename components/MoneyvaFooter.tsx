@@ -64,7 +64,9 @@ export default function MoneyvaFooter() {
               <Link href="/sip-calculator" className={linkClass}>
                 {text.sip}
               </Link>
-              <span className={comingSoonClass}>{text.incomeTax}</span>
+              <Link href="/income-tax-calculator" className={linkClass}>
+                {text.incomeTax}
+              </Link>
               <span className={comingSoonClass}>{text.epf}</span>
             </div>
           </div>

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:income-tax": "rm -rf .tmp-tax-tests && tsc app/income-tax-calculator/tax-calculations.ts --target ES2022 --module commonjs --outDir .tmp-tax-tests --skipLibCheck && node --test app/income-tax-calculator/tax-calculations.test.mjs; result=$?; rm -rf .tmp-tax-tests; exit $result"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

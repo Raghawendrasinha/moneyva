@@ -738,7 +738,10 @@ export default function Home() {
             icon="T"
             title={t.incomeTax}
             description={t.incomeTaxDescription}
-            availableText={t.comingSoon}
+            href="/income-tax-calculator"
+            available
+            availableText={t.tryIt}
+            tryText={t.tryIt}
           />
 
           <ToolCard

@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "CTC to In-Hand Salary Calculator",
+  title: "CTC to In-Hand Salary Calculator – Take-Home Pay | Moneyva",
   description:
-    "Calculate your monthly in-hand salary from CTC in India. Estimate basic salary, HRA, PF, deductions and take-home pay with Moneyva.",
+    "Calculate your in-hand salary from CTC in India. Estimate monthly take-home pay after PF, income tax and other salary deductions with Moneyva.",
   alternates: {
     canonical: "https://www.moneyva.in/ctc-calculator",
   },
   openGraph: {
-    title: "CTC to In-Hand Salary Calculator | Moneyva",
+    title: "CTC to In-Hand Salary Calculator – Take-Home Pay | Moneyva",
     description:
-      "Calculate your estimated monthly in-hand salary from CTC in India.",
+      "Estimate your monthly take-home pay from CTC after PF, income tax and other salary deductions.",
     url: "https://www.moneyva.in/ctc-calculator",
     siteName: "Moneyva",
     locale: "en_IN",

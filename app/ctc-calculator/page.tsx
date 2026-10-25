@@ -1719,6 +1719,29 @@ export default function CTCCalculator() {
                 </Link>
               </div>
 
+              <div className="mt-4 rounded-xl border border-slate-200 p-5 dark:border-white/10">
+                <h3 className="font-bold text-slate-900 dark:text-white">
+                  {language === "hi"
+                    ? "अपना इनकम टैक्स कैलकुलेट करें"
+                    : "Calculate Your Income Tax"}
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  {language === "hi"
+                    ? "नई और पुरानी टैक्स व्यवस्था के तहत अपने अनुमानित इनकम टैक्स की तुलना करने के लिए Moneyva Income Tax Calculator का उपयोग करें।"
+                    : "Use the Moneyva Income Tax Calculator to estimate and compare your tax under the new and old tax regimes for Tax Year 2026–27."}
+                </p>
+
+                <Link
+                  href="/income-tax-calculator"
+                  className="mt-4 inline-flex font-semibold text-blue-600 hover:underline dark:text-blue-400"
+                >
+                  {language === "hi"
+                    ? "Income Tax Calculator देखें →"
+                    : "Open Income Tax Calculator →"}
+                </Link>
+              </div>
+
               {/* CTC CALCULATOR FAQ */}
               <section className="mt-10" aria-labelledby="ctc-faq-heading">
                 <h3

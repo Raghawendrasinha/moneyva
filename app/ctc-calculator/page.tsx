@@ -1638,8 +1638,8 @@ export default function CTCCalculator() {
 
                 <p className="mt-2 leading-7 text-slate-700 dark:text-slate-300">
                   {language === "hi"
-                    ? "मान लीजिए आपकी annual CTC ₹10 लाख है। इसका मतलब यह नहीं है कि आपको हर महीने ₹83,333 सीधे बैंक खाते में मिलेंगे। PF, gratuity, variable pay और income tax जैसी चीजों के कारण actual monthly take-home इससे कम या अलग हो सकता है।"
-                    : "Suppose your annual CTC is ₹10 lakh. This does not mean you will receive ₹83,333 directly in your bank account every month. PF, gratuity, variable pay and income tax can make your actual monthly take-home lower or different."}
+                    ? "मान लीजिए आपकी annual CTC ₹10 लाख है। इसे 12 से भाग देने पर लगभग ₹83,333 प्रति माह मिलता है, लेकिन यह जरूरी नहीं कि आपकी in-hand salary भी इतनी हो। पहले CTC में शामिल employer PF, gratuity और variable pay जैसे घटकों को समझें। फिर gross salary से employee PF और लागू income tax जैसी कटौतियाँ घटाकर estimated take-home निकाला जाता है। अपना वास्तविक अनुमान पाने के लिए ऊपर दिए गए calculator में अपनी salary structure और tax settings दर्ज करें।"
+                    : "Suppose your annual CTC is ₹10 lakh. Dividing it by 12 gives about ₹83,333 per month, but that is not necessarily your in-hand salary. First, account for CTC components such as employer PF, gratuity and variable pay. Estimated take-home is then calculated by subtracting employee PF and applicable income tax from gross salary. Enter your salary structure and tax settings in the calculator above to estimate your own take-home pay."}
                 </p>
               </div>
 

@@ -19,7 +19,7 @@ const TEXT = {
     title: "CTC to In-Hand Salary Calculator",
 
     description:
-      "Calculate your estimated monthly take-home salary from your annual CTC.",
+      "Calculate your estimated monthly in-hand salary from annual CTC in India. Account for salary components, employee PF and applicable income tax to estimate your take-home pay.",
 
     salaryStructure: "Salary Structure",
 
@@ -141,7 +141,7 @@ const TEXT = {
     title: "CTC से इन-हैंड सैलरी कैलकुलेटर",
 
     description:
-      "अपनी वार्षिक CTC से अनुमानित मासिक इन-हैंड सैलरी की गणना करें।",
+      "भारत में अपनी वार्षिक CTC से अनुमानित मासिक इन-हैंड सैलरी की गणना करें। सैलरी के घटकों, कर्मचारी PF और लागू इनकम टैक्स को ध्यान में रखकर टेक-होम सैलरी का अनुमान लगाएँ।",
 
     salaryStructure: "वेतन संरचना",
 

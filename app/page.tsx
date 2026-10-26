@@ -740,7 +740,7 @@ export default function Home() {
             description={t.incomeTaxDescription}
             href="/income-tax-calculator"
             available
-            availableText={t.tryIt}
+            availableText={t.available}
             tryText={t.tryIt}
           />
 
